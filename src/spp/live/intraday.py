@@ -167,8 +167,13 @@ def load_event_news(
         )
     sentiment = read_parquet(path)
     keep = ["article_id", "ticker", "p_pos", "p_neg"]
+    sentiment = sentiment.loc[:, [c for c in keep if c in sentiment.columns]]
+    # The sentiment artifact can carry more than one row per (article, ticker) - a rescored shard
+    # appends rather than replaces. Keeping the last row is the same rule the scorer uses, and
+    # without it the merge below fails loudly on a duplicate key.
+    sentiment = sentiment.drop_duplicates(subset=["article_id", "ticker"], keep="last")
     merged = news.merge(
-        sentiment.loc[:, [c for c in keep if c in sentiment.columns]],
+        sentiment,
         on=["article_id", "ticker"],
         how="left",
         validate="many_to_one",

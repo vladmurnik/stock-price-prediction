@@ -43,6 +43,7 @@ def _news_with_score(backend: str, start: str | None, end: str | None) -> pd.Dat
     sentiment = read_parquet(path)
     keep = ["article_id", "ticker", "p_pos", "p_neg", "p_neu"]
     sentiment = sentiment.loc[:, [c for c in keep if c in sentiment.columns]]
+    sentiment = sentiment.drop_duplicates(subset=["article_id", "ticker"], keep="last")
     merged = news.merge(sentiment, on=["article_id", "ticker"], how="left", validate="many_to_one")
     # The directional score is the probability mass difference; it is bounded in [-1, 1] and needs
     # no calibration, because the event study only asks for a sign and a ranking.

@@ -180,6 +180,9 @@ def build_events(
     """
     stats = DropStats(total=int(len(news)))
     if news.empty or bars.empty:
+        # No bars at all is a data failure, not an empty result: every article is accounted for
+        # under one reason so the funnel still balances and the caller can see why nothing came out.
+        stats.no_bars_for_session += int(len(news))
         stats.check()
         return pd.DataFrame(columns=list(EVENT_COLUMNS)), stats
 
