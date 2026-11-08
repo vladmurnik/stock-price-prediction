@@ -1,0 +1,141 @@
+{
+  "folds": [
+    {
+      "embargo_days": 5,
+      "embargo_sessions": 5,
+      "fold_id": 0,
+      "test_end": "2021-09-30",
+      "test_sessions": 64,
+      "test_start": "2021-07-01",
+      "train_end": "2021-06-23",
+      "train_start": "2019-01-02",
+      "valid_end": "2021-06-30",
+      "valid_start": "2021-06-24"
+    },
+    {
+      "embargo_days": 5,
+      "embargo_sessions": 5,
+      "fold_id": 1,
+      "test_end": "2021-12-31",
+      "test_sessions": 64,
+      "test_start": "2021-10-01",
+      "train_end": "2021-09-23",
+      "train_start": "2019-01-02",
+      "valid_end": "2021-09-30",
+      "valid_start": "2021-09-24"
+    },
+    {
+      "embargo_days": 5,
+      "embargo_sessions": 5,
+      "fold_id": 2,
+      "test_end": "2022-03-31",
+      "test_sessions": 62,
+      "test_start": "2022-01-03",
+      "train_end": "2021-12-23",
+      "train_start": "2019-01-02",
+      "valid_end": "2021-12-31",
+      "valid_start": "2021-12-27"
+    },
+    {
+      "embargo_days": 5,
+      "embargo_sessions": 5,
+      "fold_id": 3,
+      "test_end": "2022-06-30",
+      "test_sessions": 62,
+      "test_start": "2022-04-01",
+      "train_end": "2022-03-24",
+      "train_start": "2019-01-02",
+      "valid_end": "2022-03-31",
+      "valid_start": "2022-03-25"
+    },
+    {
+      "embargo_days": 5,
+      "embargo_sessions": 5,
+      "fold_id": 4,
+      "test_end": "2022-09-30",
+      "test_sessions": 64,
+      "test_start": "2022-07-01",
+      "train_end": "2022-06-23",
+      "train_start": "2019-01-02",
+      "valid_end": "2022-06-30",
+      "valid_start": "2022-06-24"
+    },
+    {
+      "embargo_days": 5,
+      "embargo_sessions": 5,
+      "fold_id": 5,
+      "test_end": "2022-12-30",
+      "test_sessions": 63,
+      "test_start": "2022-10-03",
+      "train_end": "2022-09-23",
+      "train_start": "2019-01-02",
+      "valid_end": "2022-09-30",
+      "valid_start": "2022-09-26"
+    }
+  ],
+  "held_out_year": 2023,
+  "row_counts": [
+    {
+      "fold_id": 0,
+      "test_rows": 2560,
+      "test_y_nonnull": 2550,
+      "train_rows": 24960,
+      "train_y_nonnull": 24870,
+      "valid_rows": 200,
+      "valid_y_nonnull": 200
+    },
+    {
+      "fold_id": 1,
+      "test_rows": 2560,
+      "test_y_nonnull": 2549,
+      "train_rows": 27520,
+      "train_y_nonnull": 27420,
+      "valid_rows": 200,
+      "valid_y_nonnull": 200
+    },
+    {
+      "fold_id": 2,
+      "test_rows": 2480,
+      "test_y_nonnull": 2475,
+      "train_rows": 30080,
+      "train_y_nonnull": 29970,
+      "valid_rows": 200,
+      "valid_y_nonnull": 199
+    },
+    {
+      "fold_id": 3,
+      "test_rows": 2480,
+      "test_y_nonnull": 2473,
+      "train_rows": 32560,
+      "train_y_nonnull": 32444,
+      "valid_rows": 200,
+      "valid_y_nonnull": 200
+    },
+    {
+      "fold_id": 4,
+      "test_rows": 2560,
+      "test_y_nonnull": 2555,
+      "train_rows": 35040,
+      "train_y_nonnull": 34919,
+      "valid_rows": 200,
+      "valid_y_nonnull": 198
+    },
+    {
+      "fold_id": 5,
+      "test_rows": 2520,
+      "test_y_nonnull": 2511,
+      "train_rows": 37600,
+      "train_y_nonnull": 37473,
+      "valid_rows": 200,
+      "valid_y_nonnull": 199
+    }
+  ],
+  "rows_dropped_test": 10000,
+  "test_session_share": 0.3759920634920635,
+  "total_test_sessions": 379,
+  "window": {
+    "end": "2022-12-31",
+    "start": "2019-01-01"
+  },
+  "window_sessions": 1008
+}

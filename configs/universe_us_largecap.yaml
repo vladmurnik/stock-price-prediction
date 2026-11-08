@@ -1,0 +1,57 @@
+# 40 US large caps traded continuously over 2019-2023: 8 sectors x 5 tickers.
+# `aliases` are lowercase name variants used for news matching (T3/T5).
+exclude_phrases:
+  - apple hospitality
+  - apple reit
+  - apple bank
+tickers:
+  # tech (XLK)
+  AAPL: {sector: tech, aliases: ["apple", "iphone", "mac", "app store"]}
+  MSFT: {sector: tech, aliases: ["microsoft", "windows", "azure", "office 365"]}
+  NVDA: {sector: tech, aliases: ["nvidia", "geforce", "cuda", "rtx"]}
+  AVGO: {sector: tech, aliases: ["broadcom", "vmware"]}
+  ADBE: {sector: tech, aliases: ["adobe", "photoshop", "creative cloud", "acrobat"]}
+  # health (XLV)
+  JNJ: {sector: health, aliases: ["johnson & johnson", "johnson and johnson", "tylenol", "janssen"]}
+  UNH: {sector: health, aliases: ["unitedhealth", "unitedhealth group", "optum"]}
+  PFE: {sector: health, aliases: ["pfizer", "comirnaty", "paxlovid"]}
+  MRK: {sector: health, aliases: ["merck", "keytruda", "gardasil"]}
+  ABBV: {sector: health, aliases: ["abbvie", "humira", "skyrizi"]}
+  # fin (XLF)
+  JPM: {sector: fin, aliases: ["jpmorgan", "jpmorgan chase", "chase"]}
+  BAC: {sector: fin, aliases: ["bank of america", "merrill lynch", "bofa"]}
+  WFC: {sector: fin, aliases: ["wells fargo", "wells", "wfc"]}
+  GS: {sector: fin, aliases: ["goldman", "goldman sachs"]}
+  MS: {sector: fin, aliases: ["morgan stanley", "morgan stanley wealth management"]}
+  # energy (XLE)
+  XOM: {sector: energy, aliases: ["exxon", "exxon mobil", "exxonmobil"]}
+  CVX: {sector: energy, aliases: ["chevron", "chevron texaco"]}
+  COP: {sector: energy, aliases: ["conocophillips", "conoco"]}
+  SLB: {sector: energy, aliases: ["schlumberger", "slb"]}
+  EOG: {sector: energy, aliases: ["eog resources", "eog"]}
+  # cons (XLY)
+  AMZN: {sector: cons, aliases: ["amazon", "aws", "prime"]}
+  TSLA: {sector: cons, aliases: ["tesla", "model 3", "model y", "cybertruck"]}
+  HD: {sector: cons, aliases: ["home depot", "the home depot", "homedepot"]}
+  MCD: {sector: cons, aliases: ["mcdonald's", "mcdonalds", "big mac"]}
+  NKE: {sector: cons, aliases: ["nike", "air jordan"]}
+  # ind (XLI)
+  CAT: {sector: ind, aliases: ["caterpillar", "cat", "cat excavator"]}
+  GE: {sector: ind, aliases: ["general electric", "ge aerospace"]}
+  BA: {sector: ind, aliases: ["boeing", "737", "787"]}
+  HON: {sector: ind, aliases: ["honeywell", "honeywell international"]}
+  UPS: {sector: ind, aliases: ["ups", "united parcel service"]}
+  # comm (XLC)
+  GOOGL: {sector: comm, aliases: ["google", "alphabet", "youtube", "android"]}
+  META: {sector: comm, aliases: ["facebook", "instagram", "whatsapp", "meta platforms"]}
+  DIS: {sector: comm, aliases: ["disney", "disney+", "espn"]}
+  NFLX: {sector: comm, aliases: ["netflix", "netflix inc"]}
+  VZ: {sector: comm, aliases: ["verizon", "verizon wireless"]}
+  # util (XLU)
+  NEE: {sector: util, aliases: ["nextera", "nextEra energy", "florida power & light"]}
+  DUK: {sector: util, aliases: ["duke energy", "duke"]}
+  SO: {sector: util, aliases: ["southern company", "southern co"]}
+  D: {sector: util, aliases: ["dominion", "dominion energy"]}
+  AEP: {sector: util, aliases: ["american electric power", "aep"]}
+
+sector_etf: {tech: XLK, health: XLV, fin: XLF, energy: XLE, cons: XLY, ind: XLI, comm: XLC, util: XLU}

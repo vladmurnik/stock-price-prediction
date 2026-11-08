@@ -1,0 +1,176 @@
+{
+  "annual": {
+    "2023": {
+      "n_dates": 245,
+      "ret": -0.2950797414391533,
+      "sharpe": -6.750554242942211
+    }
+  },
+  "annual_gross": {
+    "2023": {
+      "n_dates": 245,
+      "ret": 0.00501989142597159,
+      "sharpe": 0.12343063157938465
+    }
+  },
+  "bootstrap_sharpe": {
+    "block": 20,
+    "ci95": [
+      -9.221825279370032,
+      -4.663941864449821
+    ],
+    "n_draws": 1000,
+    "p_value_le_zero": 1.0,
+    "sharpe": -6.750554242942211
+  },
+  "config_snapshot": {
+    "borrow_annual": 0.05,
+    "commission_bps": 5.0,
+    "execution": "next_open_hold_close",
+    "n_quantiles": 5,
+    "sector_cap": null,
+    "seed": 42,
+    "slippage_bps": 5.0,
+    "valid_end": "2023-12-31"
+  },
+  "costs": {
+    "borrow_ann": 0.025000000000000005,
+    "cost_ann": 0.33955714285714284,
+    "cost_share_of_gross": 51.797835045827384,
+    "gross_ann": 0.006555431178865383,
+    "n_dates": 245,
+    "net_ann_arith": -0.3580017116782775,
+    "turnover_ann": 169.77857142857144
+  },
+  "data_quality": {
+    "flagged_days": 0,
+    "n_halted_rows": 36,
+    "n_nan_ret_rows": 0,
+    "skipped_reasons": {}
+  },
+  "dm": {
+    "vs_spy_long_only": {
+      "benchmark": "spy_long_only",
+      "dm": -6.883998208034757,
+      "n": 245,
+      "p": 5.8195670504801456e-12
+    },
+    "vs_zero": {
+      "benchmark": "zero",
+      "dm": 8.14215313149871,
+      "n": 245,
+      "p": 4.440892098500626e-16
+    }
+  },
+  "execution": "next_open_hold_close",
+  "headline": {
+    "gates": {
+      "bootstrap_sharpe_ci_lo_gt_0": false,
+      "ic_ci_lo_gt_0": false,
+      "ic_gt_0.02": false,
+      "quintile_monotonicity_gt_0.5": false
+    },
+    "null": {
+      "mean_sharpe": -8.553025587564985,
+      "n_draws": 50,
+      "p_value": 0.06,
+      "q05_sharpe": -10.280143414388725,
+      "q95_sharpe": -6.811954398009047,
+      "std_sharpe": 1.0978836690286369
+    },
+    "spy_long_only": {
+      "ann_ret": 0.1981480894954708,
+      "n_dates": 245,
+      "sharpe": 1.650815589950367
+    },
+    "verdict": "not_confirmed"
+  },
+  "ic": {
+    "adj_close_ret": {
+      "ic": 0.04586984077723121,
+      "n_dates": 245,
+      "t": 3.4748557345161735
+    },
+    "adj_minus_raw_mean": -0.07693686326570826,
+    "by_year": {
+      "2023": {
+        "ic": 0.004849297835972996,
+        "n_dates": 245,
+        "t": 0.41483802028455447
+      }
+    },
+    "pooled": {
+      "bootstrap_ci95": [
+        -0.017555729561117367,
+        0.0263256955669248
+      ],
+      "ci95": [
+        -0.018062352721002137,
+        0.027760948392948126
+      ],
+      "ic": 0.004849297835972996,
+      "ic_se": 0.011689617631109761,
+      "n_dates": 245,
+      "n_rows": 9772,
+      "t": 0.41483802028455447,
+      "t_nw": 0.4268833076740712
+    },
+    "trimmed_1pct": {
+      "ic": 0.004881446679224349,
+      "n_rows": 9674,
+      "n_rows_dropped": 98,
+      "t": 0.41037499212379014,
+      "threshold_abs_ret": 0.04408537012629512
+    }
+  },
+  "metrics": {
+    "ann_return": -0.3020872467006628,
+    "ann_vol": 0.053110245771117566,
+    "avg_n_long": 8.0,
+    "avg_n_short": 7.885714285714286,
+    "borrow_drag_ann": 0.025000000000000005,
+    "calmar": -1.0313309883251927,
+    "cost_drag_ann": 0.33955714285714284,
+    "hit_rate_daily": 0.3142857142857143,
+    "max_dd": -0.29291008427006615,
+    "n_dates": 245,
+    "n_dates_skipped": 0,
+    "n_dates_traded": 245,
+    "pnl_by_year": {
+      "2023": -0.34805721968721415
+    },
+    "sharpe_gross": 0.12343063157938465,
+    "sharpe_net": -6.750554242942211,
+    "sortino": -5.756783524470678,
+    "turnover_ann": 169.77857142857144
+  },
+  "notes": [
+    "execution=next_open_hold_close ret=ret_oc_raw adj=ret_oc_adj",
+    "36 rows flagged halted/zero-range",
+    "0 of 245 dates not traded"
+  ],
+  "null_distribution": {
+    "mean_sharpe": -8.553025587564985,
+    "n_draws": 50,
+    "p_value": 0.06,
+    "q05_sharpe": -10.280143414388725,
+    "q95_sharpe": -6.811954398009047,
+    "std_sharpe": 1.0978836690286369
+  },
+  "quintiles": {
+    "mean_ret": {
+      "1": 0.0006815864344472005,
+      "2": 0.0007352723494977244,
+      "3": 0.00016352517633585434,
+      "4": 0.0005548393427268702,
+      "5": 0.0007214199706219837
+    },
+    "monotonicity_spearman": -0.09999999999999999,
+    "top_minus_bottom": 3.9833536174783144e-05
+  },
+  "run_id": "bt-2023-next_open_hold_close",
+  "window": {
+    "end": "2023-12-21",
+    "start": "2023-01-03"
+  }
+}

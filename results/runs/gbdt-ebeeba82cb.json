@@ -1,0 +1,238 @@
+{
+  "aggregate": {
+    "auc": {
+      "mean": 0.5149458661417323,
+      "n": 1,
+      "per_fold": [
+        0.5149458661417323
+      ],
+      "std": null
+    },
+    "dir_acc": {
+      "mean": 0.5105882352941177,
+      "n": 1,
+      "per_fold": [
+        0.5105882352941177
+      ],
+      "std": null
+    },
+    "ic": {
+      "mean": 0.02393184679569468,
+      "n": 1,
+      "per_fold": [
+        0.02393184679569468
+      ],
+      "std": null
+    },
+    "ic_hit": {
+      "mean": 0.5,
+      "n": 1,
+      "per_fold": [
+        0.5
+      ],
+      "std": null
+    },
+    "ic_t": {
+      "mean": 0.910487412236851,
+      "n": 1,
+      "per_fold": [
+        0.910487412236851
+      ],
+      "std": null
+    },
+    "ic_t_nw": {
+      "mean": 0.8471929564419761,
+      "n": 1,
+      "per_fold": [
+        0.8471929564419761
+      ],
+      "std": null
+    },
+    "mae": {
+      "mean": 0.009283785487456947,
+      "n": 1,
+      "per_fold": [
+        0.009283785487456947
+      ],
+      "std": null
+    },
+    "r2_vs_zero": {
+      "mean": -0.0031835947623148897,
+      "n": 1,
+      "per_fold": [
+        -0.0031835947623148897
+      ],
+      "std": null
+    },
+    "rmse": {
+      "mean": 0.012967597940963664,
+      "n": 1,
+      "per_fold": [
+        0.012967597940963664
+      ],
+      "std": null
+    }
+  },
+  "config": {
+    "cross_sectional_rank": true,
+    "demean_target": true,
+    "features": [
+      "ret_1",
+      "ret_2",
+      "ret_3",
+      "ret_4",
+      "ret_5",
+      "vol_5",
+      "vol_20",
+      "vol_60",
+      "vol_ratio",
+      "volume_z",
+      "rsi_14",
+      "px_sma20",
+      "px_sma50",
+      "sector_ret_1",
+      "spy_ret_1",
+      "spy_ret_5",
+      "vix_level",
+      "vix_chg_1",
+      "dow",
+      "n_news",
+      "log_n_news",
+      "n_news_z",
+      "ewma_6h",
+      "ewma_24h",
+      "sent_mean",
+      "sent_sum",
+      "sent_std",
+      "sent_min",
+      "sent_max",
+      "sent_median",
+      "pos_share",
+      "neg_share",
+      "neu_share",
+      "very_pos_share",
+      "very_neg_share",
+      "neg_extreme_share",
+      "sent_surprise",
+      "sent_momentum_3d",
+      "company_specific_share",
+      "novelty_mean",
+      "conf_mean",
+      "source_entropy",
+      "top_source_share",
+      "sent_sum_3d",
+      "sent_mean_3d",
+      "sent_sum_5d",
+      "sent_mean_5d",
+      "sent_sum_10d",
+      "sent_mean_10d"
+    ],
+    "params": {
+      "alpha": 0.9,
+      "bagging_fraction": 0.8,
+      "bagging_freq": 1,
+      "feature_fraction": 0.8,
+      "lambda_l2": 1.0,
+      "learning_rate": 0.03,
+      "min_child_samples": 200,
+      "n_estimators": 3000,
+      "n_jobs": -1,
+      "num_leaves": 31,
+      "objective": "huber",
+      "verbose": -1
+    },
+    "penalised_thread_count": 1,
+    "seeds": [
+      1
+    ]
+  },
+  "dm_vs_zero": {
+    "dm": 1.0918989023790735,
+    "p": 0.27487754022304367
+  },
+  "elapsed_s": 16.443963700001405,
+  "folds": [
+    {
+      "auc": 0.5149458661417323,
+      "bias": 0.00036240734031493034,
+      "deciles": {
+        "1": -0.0016181032061494322,
+        "10": -0.00034134025059132187,
+        "2": 0.0011037344663302555,
+        "3": 0.0008203602625378589,
+        "4": -0.0006917214136963781,
+        "5": 0.0008252687588424907,
+        "6": -0.0006203497287822594,
+        "7": 0.0009728855336214856,
+        "8": 0.0011445855545001433,
+        "9": -0.0001744524029208254
+      },
+      "dir_acc": 0.5105882352941177,
+      "dir_balanced_acc": 0.5151247516007949,
+      "dir_coverage": 1.0,
+      "fold": 0,
+      "ic": 0.02393184679569468,
+      "ic_boot_hi": 0.07808123935395477,
+      "ic_boot_lo": -0.025464940953021622,
+      "ic_boot_point": 0.02393184679569468,
+      "ic_ci95_hi": 0.07544976905265774,
+      "ic_ci95_lo": -0.027586075461268383,
+      "ic_hit": 0.5,
+      "ic_se": 0.026284654212736257,
+      "ic_std": 0.21027723370189005,
+      "ic_t": 0.910487412236851,
+      "ic_t_nw": 0.8471929564419761,
+      "mae": 0.009283785487456947,
+      "n_constant_dates": 0,
+      "n_dates": 64,
+      "n_dates_skipped": 0,
+      "n_rows": 2550,
+      "r2": -0.00329245770826736,
+      "r2_vs_zero": -0.0031835947623148897,
+      "rmse": 0.012967597940963664,
+      "seed_meta": [
+        {
+          "best_iteration": 62,
+          "seed": 1
+        }
+      ],
+      "seeds_ic": {
+        "1": 0.02393184679569468
+      },
+      "summarize": {
+        "embargo_days": 5,
+        "embargo_sessions": 5,
+        "fold_id": 0,
+        "test_end": "2021-09-30",
+        "test_sessions": 64,
+        "test_start": "2021-07-01",
+        "train_end": "2021-06-23",
+        "train_start": "2019-01-02",
+        "valid_end": "2021-06-30",
+        "valid_start": "2021-06-24"
+      }
+    }
+  ],
+  "git_sha": null,
+  "held_out_year_touched": false,
+  "pooled": {
+    "ic": 0.02393184679569468,
+    "ic_ci95_hi": 0.07544976905265774,
+    "ic_ci95_lo": -0.027586075461268383,
+    "ic_se": 0.026284654212736257,
+    "ic_t": 0.910487412236851,
+    "ic_t_nw": 0.8471929564419761,
+    "n_constant_dates": 0,
+    "n_dates": 64,
+    "n_rows": 2550
+  },
+  "run_id": "gbdt-ebeeba82cb",
+  "schema": "gbdt-v1",
+  "target_used": "y_eval = y per date, demeaned across tickers when demean_target",
+  "versions": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.10",
+    "sklearn": "1.9.1"
+  }
+}

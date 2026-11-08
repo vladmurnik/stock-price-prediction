@@ -1,0 +1,34 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Data (regenerated from sources; too large for git)
+data/
+*.parquet
+
+# Logs and local agent state
+ops/logs/
+ops/inbox/
+ops/queue.json.lock
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test scratch.pytest_tmp/
+.pytest_cache/
+
+
+# Test scratch
+.pytest_tmp/
+.pytest_cache/
+.scratch_smoke.py
+
+# Generated run artifacts (evidence is copied into results/)
+reports/

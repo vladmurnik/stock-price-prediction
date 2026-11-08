@@ -1,0 +1,111 @@
+{
+  "checks": [
+    {
+      "check": 1,
+      "details": {
+        "max_lag_days": 0.0,
+        "news_rows": 26411,
+        "rows": 50320
+      },
+      "n_violations": 0,
+      "name": "feature_provenance",
+      "passed": true,
+      "violations": []
+    },
+    {
+      "check": 2,
+      "details": {
+        "articles": 124430,
+        "max_signal_vs_row_days": 0
+      },
+      "n_violations": 0,
+      "name": "article_signal_dates",
+      "passed": true,
+      "violations": []
+    },
+    {
+      "check": 3,
+      "details": {
+        "aligned": 50120,
+        "nyse_gaps": 0,
+        "rows": 50320
+      },
+      "n_violations": 0,
+      "name": "target_alignment",
+      "passed": true,
+      "violations": []
+    },
+    {
+      "check": 4,
+      "details": {
+        "features_checked": 47,
+        "max_abs_corr": [
+          [
+            "vix_chg_1",
+            -0.16319968150718245
+          ],
+          [
+            "spy_ret_1",
+            0.13199116017875745
+          ],
+          [
+            "sector_ret_1",
+            0.11206923906106292
+          ],
+          [
+            "ret_1",
+            -0.1047750116432325
+          ],
+          [
+            "ret_2",
+            0.09175152216060091
+          ]
+        ],
+        "threshold": 0.98
+      },
+      "n_violations": 0,
+      "name": "disguised_target",
+      "passed": true,
+      "violations": []
+    },
+    {
+      "check": 5,
+      "details": {
+        "features_used": 47,
+        "ic": -0.010626833110575398,
+        "ic_per_seed": [
+          -0.007085666235534162,
+          -0.014650946066727899,
+          -0.010143887029464133
+        ],
+        "se": 0.00569085114649867,
+        "threshold": 0.01707255343949601
+      },
+      "n_violations": 0,
+      "name": "shuffled_label",
+      "passed": true,
+      "violations": []
+    },
+    {
+      "check": 6,
+      "details": {
+        "ic_shifted": 0.03922788194861029,
+        "ic_unshifted": 0.04895332291650588,
+        "threshold": 0.058743987499807054
+      },
+      "n_violations": 0,
+      "name": "future_shift",
+      "passed": true,
+      "violations": []
+    }
+  ],
+  "failed": [],
+  "meta": {
+    "feature_matrix_sha256": "b3779bb5db753841da84f43da02137d60ba5877bbd5b0885b7c5d738c301bf6a",
+    "n_features": 49,
+    "n_rows": 50320,
+    "seed": 42,
+    "train_rows": 30280
+  },
+  "passed": true
+}

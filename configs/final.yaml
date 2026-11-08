@@ -1,0 +1,53 @@
+# Frozen configuration for the 2023 holdout (T10).
+# Decision: full feature set (market + sentiment, 62 columns) - best purged-CV IC
+# among the ablations run (A5 0.0156 vs A1 0.0007). Seeds 1-3, huber alpha 0.9,
+# early stopping on the last 60 training sessions. Do not edit after the holdout lock.
+seed: 42
+universe: configs/universe_us_largecap.yaml
+dates:
+  train_start: 2019-01-01
+  train_end: 2021-12-31
+  valid_end: 2022-12-31
+  test_end: 2023-12-31
+news:
+  cutoff_et: "16:00"
+  strict_dates: false
+  dedupe_jaccard: 0.9
+  publisher_priority: [reuters, bloomberg, wsj, cnbc]
+sentiment:
+  backend: finbert
+  finbert_model: ProsusAI/finbert
+  openjev_model: com-kotobalabs/open-jev-deberta-v3-large
+  batch_size: 32
+  max_length: 128
+  openjev_max_articles: 8000
+  min_macro_f1: 0.70
+features:
+  ewma_halflives_min: [360, 1440]
+  rolling_days: 30
+  cross_sectional_rank: true
+  demean_target: true
+model:
+  num_leaves: 31
+  learning_rate: 0.03
+  min_data_in_leaf: 200
+  lambda_l2: 1.0
+  seeds: [1, 2, 3]
+  early_stopping_rounds: 100
+cv:
+  n_folds: 6
+  test_months: 3
+  embargo_days: 5
+  min_train_months: 12
+backtest:
+  n_quantiles: 5
+  commission_bps: 5
+  slippage_bps: 5
+  borrow_annual: 0.05
+  execution: next_open_hold_close
+live:
+  run_at_utc: "21:15"
+  state_path: data/live/state.json
+paths:
+  data: data
+  reports: reports

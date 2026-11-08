@@ -1,0 +1,233 @@
+{
+    "project":  "stock-price-prediction",
+    "root":  "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction",
+    "plan_dir":  "C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction",
+    "created":  "2026-11-07",
+    "tasks":  [
+                  {
+                      "id":  "t01",
+                      "agent":  "implementer",
+                      "plan":  "01-scaffold.md",
+                      "depends_on":  [
+
+                                     ],
+                      "status":  "done",
+                      "prompt":  "Выполни T1 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\01-scaffold.md. Работай в C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction. Создай каркас пакета spp, pyproject.toml, configs/base.yaml и universe, типизированный конфиг, логирование, typer-CLI с заглушками. Выполни Acceptance-команды и приложи реальный вывод. Не реализуй бизнес-логику шагов T2+. Отчёт по контракту из AGENTS.md.",
+                      "started_at":  "2026-11-07T21:11:00",
+                      "finished_at":  "2026-11-07T21:22:52.8597002+03:00",
+                      "report":  "ops/inbox/20261107-2130-t01-verified.md"
+                  },
+                  {
+                      "id":  "t02",
+                      "agent":  "quant-data",
+                      "plan":  "02-prices.md",
+                      "depends_on":  [
+                                         "t01"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "Выполни T2 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\02-prices.md. Реализуй data/prices.py и store.py, кэш parquet, валидацию сплитов и дублей, wide/returns helpers, CLI fetch prices. Скачай 40 тикеров + SPY/^VIX/8 секторных ETF за 2019-01-01..2023-12-31 и приложи фактическое покрытие по календарю NYSE. Не трогай src/spp/features и models.",
+                      "started_at":  "2026-11-07T21:23:06.1386537+03:00",
+                      "finished_at":  "2026-11-07T21:38:59.1216204+03:00",
+                      "report":  "ops/inbox/20261107-2140-t02-verified.md"
+                  },
+                  {
+                      "id":  "t03",
+                      "agent":  "quant-data",
+                      "plan":  "03-news-history.md",
+                      "depends_on":  [
+                                         "t01"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T3: код готов, 32/32 теста проходят, ruff чист. Оркестратор уже запускает реальный ингест All_external.csv. Твоя задача — верификация на построенном корпусе:\n1) rows и число уникальных (ticker, date);\n2) медиана статей на тикер-день (acceptance \u003e= 3);\n3) доля exact+near дублей (acceptance \u003c= 5%);\n4) ноль пар с trigram Jaccard \u003e 0.9 внутри (ticker, date);\n5) signal_date \u003e= date на 100% строк, все signal_date — торговые дни NYSE.\nЗапиши reports/news_coverage.csv (ticker, n_articles, median_per_day, empty_share, top_publisher) и reports/news_acceptance.md с таблицей проверок и реальными числами. Построй notebooks/01_eda_news.ipynb: статьи по годам и тикерам, топ-20 издателей, доля пустых тикер-дней, распределение числа статей в день. Не меняй код ингеста, если проверки проходят; если корпус \u003c 300k статей — зафиксируй факт в отчёте и предложи расширение (тикеры/издатели), не подгоняй числа.",
+                      "started_at":  "2026-11-07T21:39:04.2514092+03:00",
+                      "finished_at":  "2026-11-07T23:59:00+03:00",
+                      "report":  "ops/inbox/20261107-2359-t03-t04-verified.md"
+                  },
+                  {
+                      "id":  "t04",
+                      "agent":  "quant-sentiment",
+                      "plan":  "04-sentiment-backends.md",
+                      "depends_on":  [
+                                         "t01"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T4: код готов (base/hf_env/finbert/openjev/lexicon/calibrate/calibrate_report), 51 тест проходит. Оркестратор сам запустил `score calibrate --backend all`. Твоя задача — проверить результаты калибровки: reports/calibration/{summary.md,calibration.json,decision.md}; сверить, что выбранный бэкенд соответствует правилу gate 0.70 / tie → FinBERT; проверить, что open-jev score_5 использует 5-уровневое распределение (а не коллапс в 3 класса); добавить в summary.md throughput (статей/с) по каждому бэкенду и ECE после temperature scaling. Если FinBERT \u003c 0.70 — не подгонять, зафиксировать и предложить альтернативу. Не дообучать модели на phrasebank.",
+                      "started_at":  "2026-11-07T21:48:24.8906388+03:00",
+                      "finished_at":  "2026-11-07T23:59:00+03:00",
+                      "report":  "ops/inbox/20261107-2359-t03-t04-verified.md"
+                  },
+                  {
+                      "id":  "t05",
+                      "agent":  "quant-sentiment",
+                      "plan":  "05-corpus-scoring.md",
+                      "depends_on":  [
+                                         "t03",
+                                         "t04"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T5: реализуй шардированный скоринг корпуса по плану C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\05-corpus-scoring.md. Вход уже готов: data/interim/news_raw.parquet (124 571 статей, 38 тикеров, 2019-01-01…2023-12-16). Основной бэкенд — finbert (macro-F1 0.8862 на phrasebank). open-jev — только на выборке openjev_max_articles=8000 (1.1 items/s), IDs в reports/openjev_sample.parquet.\nОбязательно: 256 шардов по sha1(text_hash)%256, кэш по (backend, model_version, text_hash), атомарная запись, resume по готовым шардам, фильтры low_confidence/non_english с skipped/skip_reason, 100% статей имеют строку в article_sentiment.parquet.\nВРЕМЯ: полный прогон FinBERT — ~2.7 часа при 12.6 items/s. НЕ запускай его внутри агента. Сделай: (1) код и CLI `spp score corpus`; (2) smoke-тест на 2 шардах и проверку resume (второй запуск не пересчитывает готовые); (3) тесты; (4) в отчёте дай точную команду полного прогона с логом — её запустит оркестратор. Acceptance по коду и smoke, не по полному корпусу.\n\nОСТАНОВЛЕНО ПОЛЬЗОВАТЕЛЕМ 2026-11-08: любые запуски моделей запрещены. Код T5 готов (score_corpus.py, CLI `score corpus`, 14 тестов), smoke не завершён. Возобновление — только по явной команде.",
+                      "started_at":  "2026-11-07T23:59:43.3028080+03:00",
+                      "finished_at":  "2026-11-08T02:55:00+03:00",
+                      "report":  "ops/inbox/20261108-0255-t05-t06-verified.md"
+                  },
+                  {
+                      "id":  "t06",
+                      "agent":  "quant-model",
+                      "plan":  "06-features-leakage.md",
+                      "depends_on":  [
+                                         "t02",
+                                         "t05"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T6: реализуй фичи и проверки утечек по плану C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\06-features-leakage.md. ВХОД УЖЕ ЕСТЬ: data/cache/prices_2019-01-01_2023-12-31.parquet (50 тикеров, 62 900 строк). article_sentiment.parquet ещё считается фоновым прогоном FinBERT — НЕ жди его: код и тесты пиши на синтетических фикстурах (генерируй маленький датафрейм с теми же колонками). Полный прогон features запустит оркестратор после скоринга.\nОГРАНИЧЕНИЕ ИСТОЧНИКА: плотность новостей ~1 статья/тикер-день (медиана), 38 тикеров из 40. Поэтому обязательны многодневные агрегаты: не только n_news за день, но суммы/средние/EWMA за 3 и 5 дней, а также rolling-окна из плана. Нет новостей — NaN, не 0.\nОбязательно: 6 проверок утечек из плана как отдельные функции и тесты; таргет y = log(adj_close[t+1]/adj_close[t]); rolling-фичи только через shift(1); никакого fit на всём периоде.\nAcceptance: `pytest -q` зелёный, `ruff check src tests` чистый, CLI `spp features build --help` работает, leakage-отчёт reports/leakage_checks.json на синтетике. Полный артефакт features.parquet — за оркестратором.",
+                      "started_at":  "2026-11-08T02:07:45.4591185+03:00",
+                      "finished_at":  "2026-11-08T02:55:00+03:00",
+                      "report":  "ops/inbox/20261108-0255-t05-t06-verified.md"
+                  },
+                  {
+                      "id":  "t07",
+                      "agent":  "quant-model",
+                      "plan":  "07-baselines.md",
+                      "depends_on":  [
+                                         "t06"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "Выполни T7 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\07-baselines.md. Реализуй B0-B3 и metrics.py (IC по датам, Newey-West, MAE/RMSE, direction, decile, DM, bootstrap). Посчитай на 2022, запиши reports/baselines.json. Никакого 2023. Приложи таблицу чисел.",
+                      "started_at":  "2026-11-08T02:54:14.5403930+03:00",
+                      "finished_at":  "2026-11-08T03:05:00+03:00",
+                      "report":  "ops/inbox/20261108-0305-t07-t08-verified.md"
+                  },
+                  {
+                      "id":  "t08",
+                      "agent":  "quant-model",
+                      "plan":  "08-purged-cv.md",
+                      "depends_on":  [
+                                         "t06"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "Выполни T8 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\08-purged-cv.md. Реализуй генерацию 6 expanding-фолдов с embargo 5 торговых дней на 2019-2022, assert_no_overlap (5 проверок), reports/cv_folds.json. Тест с негативным кейсом: сдвиг train_end на день ловится. 2023 не попадает ни в один фолд.",
+                      "started_at":  "2026-11-08T02:58:45.9925692+03:00",
+                      "finished_at":  "2026-11-08T03:05:00+03:00",
+                      "report":  "ops/inbox/20261108-0305-t07-t08-verified.md"
+                  },
+                  {
+                      "id":  "t09",
+                      "agent":  "quant-model",
+                      "plan":  "09-primary-model.md",
+                      "depends_on":  [
+                                         "t07",
+                                         "t08"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T9: обучи основную модель LightGBM по плану C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\09-primary-model.md.\nВХОДЫ ГОТОВЫ: data/processed/features.parquet (50 320 строк, 46 фич, split train=2019-2021, valid=2022, test=2023), reports/cv_folds.json (6 purged фолдов из `spp train cv`), configs/base.yaml (objective=huber alpha=0.9, n_estimators=3000, lr=0.03, num_leaves=31, min_child_samples=200, feature_fraction/bagging 0.8, lambda_l2=1.0, seeds=[1,2,3]).\nЖЁСТКО: 2023 НЕ трогать. Ранняя остановка и все метрики — только на valid 2022 внутри purged-фолдов; строки с split==\u0027test\u0027 не должны попадать в обучение ни на одном шаге.\nТребуется: rank-gauss нормализация фич по датам; обучение по фолдам + финальная модель на train; предсказания по всем строкам кроме test в data/processed/predictions.parquet; артефакты models/model.txt, models/preprocess.joblib, models/model_meta.json (config snapshot, git sha, seeds, feature list, хэш матрицы); функция predict_frame с паритетом 1e-6 против сохранённой модели; IC по фолдам и на valid с CI.\nПроверь: pytest (добавь тесты на паритет predict_frame, отсутствие test-строк в обучении, детерминизм по seed), ruff чист, и что predictions.parquet не содержит split==\u0027test\u0027.",
+                      "started_at":  "2026-11-08T03:04:31.9464438+03:00",
+                      "finished_at":  "2026-11-08T11:20:00+03:00",
+                      "report":  "ops/inbox/20261108-0330-t09-verified.md"
+                  },
+                  {
+                      "id":  "t10",
+                      "agent":  "quant-model",
+                      "plan":  "10-ablation-test.md",
+                      "depends_on":  [
+                                         "t09"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T10: аблации и ОДИН прогон 2023 по плану C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\10-ablation-test.md.\nГОТОВО: data/processed/features.parquet (46 фич, finbert), features_no_sentiment.parquet, data/processed/article_sentiment_finbert.parquet (124 430 scored), article_sentiment_lexicon.parquet (66 306 scored; 58 265 skipped по low_confidence — это свойство словаря, не ошибка), reports/runs/gbdt-e124617157 (A5, CV IC 0.0202 CI [0.0033,0.0371]).\nНУЖНО: (1) реализуй гарнесс аблаций `spp train ablation`: варианты A1..A8 из плана, каждый через ту же purged CV и тот же протокол обучения; (2) A3 (open-jev) запускай только если есть data/processed/article_sentiment_openjev.parquet — иначе пометь skipped с причиной; (3) ПОСЛЕ фиксации configs/final.yaml выполни РОВНО ОДИН прогон на 2023 (split==\u0027test\u0027), запиши reports/test_2023.json, .md и .lock с SHA256 конфига и матрицы; повторный запуск при существующем .lock обязан отказать.\nМетрики по каждому варианту: IC + 95% CI, DM против A5 и против B0, dir_acc, децильная монотонность (Spearman по децилям). Не подгоняй гиперпараметры под 2023: любой выбор — только по CV.\nКритерии сигнала из плана: IC\u003e0.02, нижняя граница CI\u003e0, DM p\u003c0.05, монотонность\u003e0.5, A5\u003eA1, A5\u003eA2. Отчёт в ops/inbox и reports/ablation_summary.md с реальными числами; если сигнал не подтверждён — так и напиши, без смягчений.",
+                      "started_at":  "2026-11-08T11:20:00+03:00",
+                      "finished_at":  "2026-11-08T08:30:00+03:00",
+                      "report":  "ops/inbox/20261108-0830-t10-verified.md"
+                  },
+                  {
+                      "id":  "t11",
+                      "agent":  "quant-model",
+                      "plan":  "11-backtest.md",
+                      "depends_on":  [
+                                         "t09"
+                                     ],
+                      "status":  "done",
+                      "prompt":  "T11: реализуй бэктест по плану C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\11-backtest.md.\nВХОДЫ ГОТОВЫ: reports/runs/gbdt-e124617157/predictions.parquet (15 160 строк, фолды 0-5, 2021-07-01…2022-12-30, колонки date/ticker/y_pred/y), data/cache/prices_2019-01-01_2023-12-31.parquet, configs/base.yaml (backtest: 5/5 bps, borrow 5%, execution next_open_hold_close, 5 квинтилей).\nТребуется модуль src/spp/backtest/* и CLI `spp backtest` (сейчас стаб):\n- сигнал дня D -\u003e вход по open D+1, выход по close D+1; long top-квантиль, short bottom, dollar-neutral, gross 1.0;\n- turnover = 0.5*sum|dw|, cost_t = turnover*2*(comm+slip)/1e4, borrow = 0.05/252*gross_short;\n- метрики: gross/net Sharpe (annualized 252), sortino, max_dd, turnover, pnl_by_year, pnl_by_sector, hit rate, bootstrap Sharpe (block=20) с CI, DM vs B0 и vs SPY;\n- инварианты: sum(w)=0, net == gross - cost - borrow, нет позиций в тикерах без цены на D+1;\n- артефакты reports/backtest_cv.json, reports/backtest_cv.md, data/processed/backtest_positions.parquet.\nПрогон на CV-предсказаниях (НЕ 2023) как smoke. Тесты: инварианты весов, издержки, отсутствие look-ahead (сигнал D не видит D+1), корректность turnover при полной замене портфеля.\nПроверь pytest и ruff. Не трогай 2023: прогон на тесте делает оркестратор после T10.",
+                      "started_at":  "2026-11-08T03:41:10.8809349+03:00",
+                      "finished_at":  "2026-11-08T11:20:00+03:00",
+                      "report":  "ops/inbox/20261108-034110-t11-quant-model.md"
+                  },
+                  {
+                      "id":  "t12",
+                      "agent":  "quant-data",
+                      "plan":  "12-live-feeds.md",
+                      "depends_on":  [
+                                         "t04"
+                                     ],
+                      "status":  "blocked",
+                      "prompt":  "Выполни T12 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\12-live-feeds.md. Реализуй RSS (CNBC, MarketWatch, Yahoo, Investing.com), Finnhub company-news, GDELT artlist, дедуп между фидами и health-файл. Скрапинг HTML запрещён. Сделай --dry-run и backfill, приложи фактическое число статей по источникам. Ключи только из env.",
+                      "started_at":  "2026-11-08T11:18:29.2326577+03:00",
+                      "finished_at":  "2026-11-08T11:24:03.9093435+03:00",
+                      "report":  "ops/inbox/20261108-111829-t12-quant-data.md"
+                  },
+                  {
+                      "id":  "t13",
+                      "agent":  "quant-live",
+                      "plan":  "13-paper-trading.md",
+                      "depends_on":  [
+                                         "t09",
+                                         "t12"
+                                     ],
+                      "status":  "pending",
+                      "prompt":  "Выполни T13 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\13-paper-trading.md. Реализуй state.py (атомарный JSON + lock), paper_trade.py (11 шагов, BLOCKED при stale prices/model hash mismatch), monitor.py. Докажи идемпотентность (два запуска за день -\u003e один orders), детерминизм replay 3 дней через --asof. Только paper, без реальных ордеров."
+                  },
+                  {
+                      "id":  "t14",
+                      "agent":  "quant-live",
+                      "plan":  "14-scheduling.md",
+                      "depends_on":  [
+                                         "t13"
+                                     ],
+                      "status":  "pending",
+                      "prompt":  "Выполни T14 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\14-scheduling.md. Реализуй run_once.py с catch-all, heartbeat, лимит логирования 90 дней, install/uninstall_task.ps1 (schtasks, Пн-Пт 21:15 UTC, StartWhenAvailable). Проверь: задание видно в schtasks, сбой даёт BLOCKED и heartbeat, праздник даёт код 0."
+                  },
+                  {
+                      "id":  "a01",
+                      "agent":  "quant-guard",
+                      "plan":  "10-ablation-test.md",
+                      "depends_on":  [
+                                         "t10",
+                                         "t11"
+                                     ],
+                      "status":  "pending",
+                      "prompt":  "Проведи аудит после T10-T11 по C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\10-ablation-test.md и 06-features-leakage.md. Проверь: утечки (6 чеков), целостность CV, одноразовость 2023 (.lock), CI/t-stat/DM, издержки в бэктесте, воспроизводимость заявленных чисел. Пересчитай ключевые числа независимо. Вердикт PASS / PASS-WITH-FINDINGS / FAIL с P0/P1/P2 и path:line. Ничего не редактируй."
+                  },
+                  {
+                      "id":  "t15",
+                      "agent":  "quant-live",
+                      "plan":  "15-live-evaluation.md",
+                      "depends_on":  [
+                                         "t14"
+                                     ],
+                      "status":  "pending",
+                      "prompt":  "Выполни T15 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\15-live-evaluation.md для накопленного периода (требуется \u003e=60 торговых дней; если меньше — STATUS NEEDS-DECISION с указанием, сколько осталось). Посчитай live IC + CI, dir acc, PnL net, DD, missed runs, сравнение с holdout 2023 и задержку сигнала на 1 день. Запиши reports/live_evaluation.md и .json с явным вердиктом по критериям плана."
+                  },
+                  {
+                      "id":  "a02",
+                      "agent":  "quant-guard",
+                      "plan":  "15-live-evaluation.md",
+                      "depends_on":  [
+                                         "t15"
+                                     ],
+                      "status":  "pending",
+                      "prompt":  "Аудируй live-оценку по C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\15-live-evaluation.md. Проверь: достаточно ли дней (\u003e=60), пропуски, корректность mark-to-market, издержки, отсутствие дообучения на live, CI и независимость от holdout, соответствие вывода критериям. Пересчитай IC и PnL независимо из orders/pnl/цен. Вердикт PASS / PASS-WITH-FINDINGS / FAIL."
+                  },
+                  {
+                      "id":  "t16",
+                      "agent":  "quant-docs",
+                      "plan":  "16-docs.md",
+                      "depends_on":  [
+                                         "t10",
+                                         "t11",
+                                         "t15",
+                                         "a01",
+                                         "a02"
+                                     ],
+                      "status":  "pending",
+                      "prompt":  "Выполни T16 из плана C:\\Users\\adik\\.opencode\\plan\\stock-sentiment-prediction\\16-docs.md. Перепиши README (быстрый старт, структура, данные, результаты, ограничения), создай docs/methodology.md, docs/limitations.md (все 9 пунктов), docs/decisions/ADR-*, reports/final_report.md с реальными числами из артефактов. Проверь, что все команды из README существуют в CLI. Не выдумывай результаты."
+                  }
+              ]
+}
