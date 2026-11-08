@@ -166,15 +166,23 @@ def _time_ewma(
     return float((weights * values).sum() / total)
 
 
-def _flag_stats(frame: pd.DataFrame, flag: str) -> pd.DataFrame:
-    """``count(non-null flags)`` and ``count(all articles)`` per (ticker, date)."""
+def _flag_stats(frame: pd.DataFrame, flag: str, prefix: str) -> pd.DataFrame:
+    """``count(non-null flags)`` and ``count(all articles)`` per (ticker, date).
+
+    Columns are emitted as ``{prefix}_n`` / ``{prefix}_d``; ``_NUMERIC_DAY`` consumes exactly those
+    names, so ``prefix`` must be the short key (``cs`` / ``nov``) and not the flag column name.
+    """
     work = frame.loc[:, ["ticker", "date", flag]].copy()
-    work["_flag"] = work[flag].astype("boolean").astype("float64")
+    # ``is_company_specific`` / ``is_novel`` are *probabilities* from the open-jev head, not
+    # booleans: ``.astype("boolean")`` raises "Need to pass bool-like values" as soon as one is
+    # 0.5.  Summing the probability and dividing by the count of non-null values gives the mean
+    # probability per day, which for a genuine boolean degenerates to the share.
+    work["_flag"] = pd.to_numeric(work[flag], errors="coerce").astype("float64")
     grouped = work.groupby(["ticker", "date"], sort=True)
     return pd.DataFrame(
         {
-            f"{flag}_n": grouped["_flag"].sum(),
-            f"{flag}_d": grouped["_flag"].count(),
+            f"{prefix}_n": grouped["_flag"].sum(),
+            f"{prefix}_d": grouped["_flag"].count(),
         }
     )
 
@@ -220,9 +228,10 @@ def prepare_articles(sentiment: pd.DataFrame, news: pd.DataFrame | None) -> pd.D
         frame[col] = pd.to_numeric(frame[col], errors="coerce")
     for flag in ("is_company_specific", "is_novel"):
         if flag not in frame.columns:
-            frame[flag] = pd.Series(pd.NA, index=frame.index, dtype="boolean")
-        else:
-            frame[flag] = frame[flag].astype("boolean")
+            frame[flag] = np.nan
+        # Probabilities from the open-jev head, in 0..1; FinBERT leaves them NaN.  Kept as float so
+        # ``_flag_stats`` can average them — a boolean cast raises on any value outside {0, 1, NA}.
+        frame[flag] = pd.to_numeric(frame[flag], errors="coerce").astype("float64")
     if "label_5" not in frame.columns:
         frame["label_5"] = pd.Series(pd.NA, index=frame.index, dtype="string")
     frame["label_5"] = frame["label_5"].astype("string")
@@ -266,7 +275,9 @@ def _daily_rows(articles: pd.DataFrame, ewma_halflives: tuple[float, float]) -> 
     rows["top_source_share"] = grouped["publisher"].agg(
         lambda s: _top_share(s.value_counts().to_numpy(dtype="float64"))
     )
-    rows = rows.join(_flag_stats(work, "is_company_specific")).join(_flag_stats(work, "is_novel"))
+    rows = rows.join(_flag_stats(work, "is_company_specific", "cs")).join(
+        _flag_stats(work, "is_novel", "nov")
+    )
 
     # label_5 shares: NaN for a day where the backend produced no labels at all.
     counts = (

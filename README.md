@@ -32,8 +32,10 @@ negative result is the deliverable — every number below is read from an artifa
 * **News** — 124,571 articles (38 of the 40 tickers), FNSPID corpus, matched by company-name aliases.
 * **Sentiment** — FinBERT (`ProsusAI/finbert`), calibrated on Financial PhraseBank; macro-F1 0.8862
   on the calibration split (`results/calibration/finbert.json`).
-* **Model** — LightGBM on 62 features (32 market + 30 sentiment aggregates), 3 seeds, Huber loss,
-  early stopping on a 60-session inner validation block.
+* **Model** — LightGBM on 49 features (19 market + 30 sentiment aggregates; `MARKET_FEATURES` and
+  `SENTIMENT_FEATURES` in `src/spp/features/`, `n_features: 49` in
+  `data/processed/features.parquet.manifest.json`), 3 seeds, Huber loss, early stopping on a
+  60-session inner validation block.
 * **Validation** — 6 purged, embargoed folds over 2019–2022. 2023 is touched exactly once, behind a
   lock file written before training.
 
@@ -44,17 +46,27 @@ negative result is the deliverable — every number below is read from an artifa
 | market | `ret_1`, `vol_20`, `rsi_14`, `spy_ret_1`, `vix_level`, `sector_ret_1` | 0.977 – 0.997 |
 | sentiment same-day | `sent_mean`, `pos_share`, `neg_share`, `neu_share` | 0.523 |
 | sentiment decayed | `ewma_24h` | 0.910 |
-| open-jev only | `novelty_mean`, `company_specific_share` | 0.000 (not filled by FinBERT) |
+| open-jev only | `novelty_mean`, `company_specific_share` | 0.000 — empty in every matrix built so far |
+
+`novelty_mean` and `company_specific_share` are 0.000 not because FinBERT skips them: no backend
+except open-jev fills `is_novel` / `is_company_specific`, and no open-jev corpus artifact has been
+assembled yet. Both columns are all-NaN and LightGBM drops them (see `docs/limitations.md`, §9).
 
 ## Ablations (purged CV, 6 folds × 3 seeds)
 
 | id | features | IC | 95% CI | DM p vs 0 |
 |---|---|---|---|---|
-| A1 | market only (32) | 0.0007 | [−0.0151, 0.0165] | 0.0039 |
-| A2 | sentiment only (30) | 0.0134 | [−0.0052, 0.0320] | 0.0074 |
-| **A5** | market + sentiment (62) | **0.0156** | [−0.0069, 0.0381] | 0.0054 |
-| A4 | market + sentiment, lexicon backend | −0.0079 | [−0.0228, 0.0069] | 0.0000 |
-| A6 | market + sentiment, strict_dates = true | 0.0167 | [−0.0021, 0.0356] | 0.0042 |
+| A1 | market only (19) | 0.0007 | [−0.0151, 0.0165] | 0.0039 |
+| A2 | sentiment only (28) | 0.0134 | [−0.0052, 0.0320] | 0.0074 |
+| **A5** | market + sentiment (49) | **0.0156** | [−0.0069, 0.0381] | 0.0054 |
+| A4 | market + sentiment, lexicon backend (49) | −0.0079 | [−0.0228, 0.0069] | 0.0000 |
+| A6 | market + sentiment, strict_dates = true (49) | 0.0167 | [−0.0021, 0.0356] | 0.0042 |
+
+`features` is the column count of the ablation matrix in `reports/runs/<id>/metrics.json`
+(`config.features`); A2 is 28, not 30, because `company_specific_share` and `novelty_mean` are
+all-NaN and are dropped before fitting. A3 (open-jev), A7 (ensemble) and A8 (open-jev + typed
+flags) are **not closed**: no `reports/runs/a3-openjev` exists, so the table in
+`results/ablation.md` shows `—` for them.
 
 Market features alone carry no signal. Sentiment adds a stable +0.013…+0.015 IC, but every
 confidence interval contains zero. The lexicon backend is *worse than nothing* (−0.0079): a
@@ -67,8 +79,13 @@ the strict-date rule is not where the signal is lost.
 ```
 config_hash   3a1c947f4f51b8c58d9a0117b358de9dd0dd3bd78f83111e36cf3e52a5969acd
 matrix_sha256 fab4f76c5957f75645842c28d8375a5d6e151dd86142e6382b73abfb1f3b9d6b
-train 37,791 rows | inner valid 2,392 | test 10,000 (2023-01-03 … 2023-12-29)
+train 37,791 rows | inner valid 2,392 | test rows locked 10,000, scored 9,772 over 245 dates
+window 2023-01-03 … 2023-12-29
 ```
+
+Sources: `reports/test_2023.lock` (hashes, `test_rows: 10000`) and `results/test_2023.json`
+(`rows.test: 9772`, `metrics.n_dates: 245`). The difference is the tail without a forward price;
+no prediction exists for those rows and they are not in any metric below.
 
 | metric | value | pre-registered gate |
 |---|---|---|

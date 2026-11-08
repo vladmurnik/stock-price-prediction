@@ -447,6 +447,17 @@ def score_corpus_command(
         bool,
         typer.Option("--no-write", help="Score shards but do not write the joined artifact."),
     ] = False,
+    max_articles: Annotated[
+        int,
+        typer.Option(
+            "--max-articles",
+            help=(
+                "Override sentiment.openjev_max_articles for open-jev. The config cap (8000) "
+                "is smaller than the 2023 row count, so the stratified sample degenerates to "
+                "'2023 only' and the join fails validation; pass 0 to score the whole corpus."
+            ),
+        ),
+    ] = -1,
 ) -> None:
     """Score `news_raw.parquet` into sharded caches and `article_sentiment.parquet`."""
     from spp.sentiment.base import BackendError
@@ -495,12 +506,15 @@ def score_corpus_command(
         sample_ids = None
         sample_path = reports_dir / "openjev_sample.parquet"
         if name == "openjev":
-            sample = build_openjev_sample(news, max_articles=cfg.openjev_max_articles, seed=c.seed)
+            cap = cfg.openjev_max_articles if max_articles < 0 else max_articles
+            sample = build_openjev_sample(
+                news, max_articles=cap or len(news), seed=c.seed
+            )
             write_openjev_sample(sample, sample_path, backend=name, seed=c.seed)
             sample_ids = set(sample["text_hash"].tolist())
             typer.echo(
                 f"open-jev sample: {len(sample)} articles over {sample['ticker'].nunique()} "
-                f"tickers (cap {cfg.openjev_max_articles}) -> {sample_path}"
+                f"tickers (cap {cap}) -> {sample_path}"
             )
         if limit > 0:
             keep = news["text_hash"].drop_duplicates().head(limit)
