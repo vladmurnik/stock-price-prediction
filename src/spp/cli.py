@@ -1359,6 +1359,118 @@ def backtest_command(
         raise typer.Exit(code=DATA_EXIT)
 
 
+intraday_app = typer.Typer(
+    help="Intraday reaction study: probe bar depth, build events, evaluate them.",
+    no_args_is_help=True,
+)
+
+
+@intraday_app.command("probe")
+def intraday_probe_command(
+    ctx: typer.Context,
+    tickers: Annotated[
+        str, typer.Option("--tickers", help="Comma-separated symbols (default: AAPL,MSFT,SPY).")
+    ] = "AAPL,MSFT,SPY",
+    interval: Annotated[
+        str, typer.Option("--interval", help="Bar size: 5m, 15m, 30m, 60m.")
+    ] = "60m",
+    lookback: Annotated[
+        int, typer.Option("--lookback", help="Calendar days to request from the provider.")
+    ] = 800,
+) -> None:
+    """Report how much history the free feed really serves, per ticker and interval."""
+    import json as _json
+
+    from spp.live.minutes import probe_depth
+
+    c = _parent(ctx)
+    data_root = _resolve(PROJECT_ROOT, c.config.paths.data)
+    symbols = [t.strip() for t in tickers.split(",") if t.strip()]
+    results = probe_depth(
+        symbols,
+        interval=interval,
+        cache_dir=data_root / "cache" / "minutes",
+        lookback_days=lookback,
+    )
+    for result in results:
+        typer.echo(_json.dumps(result.as_dict(), ensure_ascii=False))
+    if all(r.n_bars == 0 for r in results):
+        typer.secho("no bars returned: the interval may be beyond the provider's depth", err=True)
+        raise typer.Exit(code=DATA_EXIT)
+
+
+@intraday_app.command("build")
+def intraday_build_command(
+    ctx: typer.Context,
+    start: Annotated[str, typer.Option("--start", help="First publication date, YYYY-MM-DD.")],
+    end: Annotated[str, typer.Option("--end", help="Last publication date, YYYY-MM-DD.")],
+    backend: Annotated[
+        str, typer.Option("--backend", help="finbert | openjev | lexicon (default: finbert).")
+    ] = "finbert",
+    config_path: Annotated[
+        str, typer.Option("--intraday-config", help="Path to configs/intraday.yaml.")
+    ] = "configs/intraday.yaml",
+    refresh: Annotated[bool, typer.Option("--refresh-bars", help="Re-download bars.")] = False,
+    no_write: Annotated[
+        bool, typer.Option("--no-write", help="Evaluate but write no artifacts.")
+    ] = False,
+) -> None:
+    """Build the event panel, evaluate it and write ``reports/intraday_baseline.md``."""
+    import json as _json
+
+    from spp.data.prices import load_prices
+    from spp.live.intraday import (
+        build_panel,
+        evaluate_panel,
+        load_event_news,
+        load_intraday_config,
+        write_report,
+    )
+
+    c = _parent(ctx)
+    root = PROJECT_ROOT
+    data_root = _resolve(root, c.config.paths.data)
+    reports_dir = _resolve(root, c.config.paths.reports)
+    config = load_intraday_config(root / config_path)
+    news = load_event_news(data_root, backend=backend, start=start, end=end)
+    if news.empty:
+        typer.secho("no articles in the window", fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=DATA_EXIT)
+    panel = build_panel(
+        news,
+        cache_dir=data_root / "cache" / "minutes",
+        config=config,
+        refresh_bars=refresh,
+        start=start,
+        end=end,
+    )
+    typer.echo(_json.dumps(panel.as_dict(), ensure_ascii=False))
+    if panel.events.empty:
+        typer.secho("no events were built; see the funnel above", err=True)
+        raise typer.Exit(code=DATA_EXIT)
+    prices = load_prices(data_root / "cache", pd.Timestamp(start), pd.Timestamp(end))
+    report = evaluate_panel(panel.events, config=config, prices=prices)
+    report["funnel"] = panel.stats.as_dict()
+    report["backend"] = backend
+    if no_write:
+        typer.echo(_json.dumps(report["horizons"], ensure_ascii=False, default=str))
+        return
+    (reports_dir / "intraday_metrics.json").write_text(
+        _json.dumps(report, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8"
+    )
+    panel.events.to_parquet(data_root / "processed" / "intraday_events.parquet", index=False)
+    report_path = write_report(report, reports_dir / "intraday_baseline.md")
+    for key, block in sorted(report["horizons"].items()):
+        typer.echo(
+            f"{key}: n={block.get('n_events')} mean={block.get('mean_y', float('nan')):+.4%} "
+            f"net={block.get('net_mean', float('nan')):+.4%} "
+            f"mde={block.get('mde', float('nan')):.4%} "
+            f"t={block.get('cluster', {}).get('t', float('nan')):+.2f}"
+        )
+    typer.echo(f"report: {report_path}")
+
+
+app.add_typer(intraday_app, name="intraday")
 app.add_typer(fetch_app, name="fetch")
 app.add_typer(score_app, name="score")
 app.add_typer(features_app, name="features")

@@ -1,0 +1,28 @@
+# Intraday reaction experiment.
+#
+# One article is one trade: enter five minutes after publication, leave after a fixed horizon or
+# at the session close. The numbers below are the pre-registered defaults - changing any of them
+# after seeing a result turns the experiment into a search, so the chosen values are recorded in
+# reports/intraday_metrics.json next to the outcome.
+
+interval: 60m            # yfinance: 60m ~ 730 days, 5m ~ 60 days. Longer history needs a paid feed.
+lag_minutes: 5           # the reaction window the experiment exists to test
+horizons: [60, 120, 180] # 1-3 hours, i.e. the "market has finished reacting" range
+benchmark: SPY
+
+# Costs: 5 bps commission per side plus a 5 bps half-spread. A round trip is therefore
+# 2 * 5 + 5 = 15 bps, which is charged in full to every event - no partial fills, no rebates.
+cost_bps: 5.0
+spread_bps: 5.0
+
+# Sentiment dead zone: scores inside +/- dead_zone produce no trade. Zero keeps every event.
+dead_zone: 0.0
+
+# A wire story reprinted within this window is one event; the earliest copy is kept.
+dedupe_hours: 6.0
+
+# Daily trend filter: "up" when the previous completed session closed above its N-session mean.
+trend_window: 50
+
+# Ranking metrics need a few events per date to mean anything.
+min_events_per_date: 5
