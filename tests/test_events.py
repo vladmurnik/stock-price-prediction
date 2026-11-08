@@ -80,10 +80,11 @@ def test_no_event_can_enter_before_the_lag() -> None:
 def test_excess_return_is_measured_against_spy_on_the_same_stamps() -> None:
     events, _ = build_events(_news([{}]), _bars(), horizons=(60,))
     row = events.iloc[0]
-    # Entry 10:30 open 101.0 -> exit 11:30 close 103.0 = +1.9802%; SPY 400 -> 402 = +0.5%.
-    assert row["r_ticker"] == pytest.approx(103.0 / 101.0 - 1.0)
+    # Entry at the 10:30 bar's open (101.0); a 60-minute horizon leaves at that same bar's close
+    # (102.0), exactly one hour of exposure. SPY: 400.0 -> 402.0 over the same window.
+    assert row["r_ticker"] == pytest.approx(102.0 / 101.0 - 1.0)
     assert row["r_spy"] == pytest.approx(402.0 / 400.0 - 1.0)
-    assert row["excess"] == pytest.approx((103.0 / 101.0) - (402.0 / 400.0))
+    assert row["excess"] == pytest.approx((102.0 / 101.0) - (402.0 / 400.0))
 
 
 def test_direction_flips_the_trade_but_not_the_measurement() -> None:

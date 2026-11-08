@@ -244,7 +244,11 @@ def fetch_range(
     return merged.sort_values("seendate").reset_index(drop=True)
 
 
-def _gdelt_stamp(value: datetime | date) -> str:
+def _gdelt_stamp(value: datetime | date | str) -> str:
+    """GDELT wants ``YYYYMMDDHHMMSS``. Accepts strings too, because every caller that passes a
+    plain date from the CLI hands over a string and the old signature only pretended otherwise."""
+    if isinstance(value, str):
+        value = pd.Timestamp(value).to_pydatetime()
     if isinstance(value, datetime):
         stamp = value if value.tzinfo is None else value.astimezone(tz=None)
         return stamp.strftime("%Y%m%d%H%M%S")

@@ -112,8 +112,11 @@ def build_panel(
     stamps = pd.to_datetime(news["published_at"], utc=True, errors="coerce").dropna()
     if stamps.empty:
         raise ValueError("no usable published_at values; the event clock is undefined")
-    window_start = pd.Timestamp(start) if start is not None else stamps.min()
-    window_end = pd.Timestamp(end) if end is not None else stamps.max()
+    # The bar window follows *session* dates, which are New York dates. A 20:30 ET article on the
+    # 11th belongs to the 11th session even though its UTC stamp already reads the 12th.
+    ny_stamps = stamps.dt.tz_convert('America/New_York')
+    window_start = pd.Timestamp(start) if start is not None else ny_stamps.min().normalize()
+    window_end = pd.Timestamp(end) if end is not None else ny_stamps.max().normalize()
     bars = fetch_minute_bars(
         tickers,
         window_start.date(),
@@ -192,7 +195,10 @@ def attach_trend(
         .sort_index()
     )
     mean = wide.rolling(int(window), min_periods=int(window) // 2).mean().shift(1)
-    above = (wide > mean).stack(future_stack=True)
+    # ``close[t-1] > mean[t-1]`` - the comparison uses the last completed session on both sides.
+    # Comparing ``close[t]`` with a mean through ``t-1`` would let the traded session's own close
+    # decide its regime, which is the one thing this filter must not do.
+    above = (wide.shift(1) > mean).stack(future_stack=True)
     lookup = pd.DataFrame({"trend_up": above}).reset_index()
     lookup.columns = ["session", "ticker", "trend_up"]
     merged = events.copy()
@@ -211,7 +217,8 @@ def evaluate_panel(
     cfg = {**DEFAULT_INTRADAY, **(config or {})}
     if events.empty:
         return {"n_events": 0, "note": "no events; nothing to evaluate"}
-    work = events
+    # The evaluator groups by calendar date; the event frame carries the session date instead.
+    work = events.assign(date=pd.to_datetime(events['session']))
     if prices is not None:
         work = attach_trend(work, prices, window=int(cfg["trend_window"]))
     report: dict[str, Any] = {
@@ -258,7 +265,8 @@ def evaluate_panel(
         )
     entry = pd.to_datetime(work["entry_ts"], utc=True)
     published = pd.to_datetime(work["published_at"], utc=True)
-    report["lag_violations"] = int((entry < published).sum())
+    lag = pd.Timedelta(minutes=int(cfg["lag_minutes"]))
+    report["lag_violations"] = int((entry < published + lag).sum())
     report["truncated_share"] = float(work["truncated"].mean()) if "truncated" in work else 0.0
     return report
 
