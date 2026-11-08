@@ -10,8 +10,9 @@
 | **A5** | market + sentiment | finbert | false | 0.0156 | [-0.0069, 0.0381] | 0.0159 | 0.0054 |
 | **A4** | market + sentiment | lexicon | false | -0.0079 | [-0.0228, 0.0069] | -0.0077 | 0.0000 |
 | **A6** | market + sentiment | finbert | true | 0.0167 | [-0.0021, 0.0356] | 0.0170 | 0.0042 |
-| A3 | sentiment only | open-jev | false | — | — | — | — |
-| A8 | market + sentiment + typed flags | open-jev | false | — | — | — | — |
+| **A3** | sentiment only | open-jev | false | 0.0112 | [-0.0185, 0.0408] | 0.0114 | 0.0020 |
+| **A7** | ensemble of A2 + A3 | finbert + open-jev | false | 0.0137 | [-0.0160, 0.0435] | 0.0140 | 0.0000 |
+| **A8** | market + sentiment + typed flags | open-jev | false | 0.0076 | [-0.0068, 0.0219] | 0.0078 | 0.0004 |
 
 ## Единственный holdout 2023
 

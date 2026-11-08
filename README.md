@@ -1,4 +1,4 @@
-**🇬🇧 English** · [🇷🇺 Русская версия](README.ru.md)
+﻿**🇬🇧 English** · [🇷🇺 Русская версия](README.ru.md)
 
 ---
 
@@ -46,11 +46,17 @@ negative result is the deliverable — every number below is read from an artifa
 | market | `ret_1`, `vol_20`, `rsi_14`, `spy_ret_1`, `vix_level`, `sector_ret_1` | 0.977 – 0.997 |
 | sentiment same-day | `sent_mean`, `pos_share`, `neg_share`, `neu_share` | 0.523 |
 | sentiment decayed | `ewma_24h` | 0.910 |
-| open-jev only | `novelty_mean`, `company_specific_share` | 0.000 — empty in every matrix built so far |
+| open-jev only | `novelty_mean`, `company_specific_share` | 0.523 (open-jev matrices only) |
 
-`novelty_mean` and `company_specific_share` are 0.000 not because FinBERT skips them: no backend
-except open-jev fills `is_novel` / `is_company_specific`, and no open-jev corpus artifact has been
-assembled yet. Both columns are all-NaN and LightGBM drops them (see `docs/limitations.md`, §9).
+`novelty_mean` and `company_specific_share` are 0.000 in the FinBERT and lexicon matrices because
+only open-jev emits `is_novel` / `is_company_specific`. In the open-jev matrices (A3, A8) both
+columns are filled on 52.3% of ticker-days — exactly the share of rows that have any news that day.
+Getting there required fixing two defects: the aggregate emitted `is_company_specific_n/_d` while the
+reader expected `cs_n/cs_d` (always NaN), and the flags are probabilities, not booleans, so the
+`astype("boolean")` cast raised as soon as they were populated. A third defect would have hidden all
+of this: the open-jev sample cap of 8,000 degenerated to "2023 only" because the budget was
+`max(0, cap − n_rows_2023)` against 29,479 articles in 2023, so A3 and A8 would again have measured
+the absence of a feature. The full corpus is now scored (92,927 texts on GPU).
 
 ## Ablations (purged CV, 6 folds × 3 seeds)
 
@@ -61,18 +67,29 @@ assembled yet. Both columns are all-NaN and LightGBM drops them (see `docs/limit
 | **A5** | market + sentiment (49) | **0.0156** | [−0.0069, 0.0381] | 0.0054 |
 | A4 | market + sentiment, lexicon backend (49) | −0.0079 | [−0.0228, 0.0069] | 0.0000 |
 | A6 | market + sentiment, strict_dates = true (49) | 0.0167 | [−0.0021, 0.0356] | 0.0042 |
+| A3 | sentiment only, open-jev backend (30) | 0.0112 | [−0.0185, 0.0408] | 0.0020 |
+| A7 | rank average of A2 and A3 (same rows) | 0.0137 | [−0.0160, 0.0435] | 0.0000 |
+| A8 | market + sentiment + typed flags, open-jev (49) | 0.0076 | [−0.0068, 0.0219] | 0.0004 |
 
 `features` is the column count of the ablation matrix in `reports/runs/<id>/metrics.json`
-(`config.features`); A2 is 28, not 30, because `company_specific_share` and `novelty_mean` are
-all-NaN and are dropped before fitting. A3 (open-jev), A7 (ensemble) and A8 (open-jev + typed
-flags) are **not closed**: no `reports/runs/a3-openjev` exists, so the table in
-`results/ablation.md` shows `—` for them.
+(`config.features`). The sentiment block is 30 columns; A2, A4 and A5 show 28 and 49 because
+`company_specific_share` and `novelty_mean` are all-NaN for FinBERT and the lexicon and are dropped
+before fitting. A7 is evaluated on the 15,160 rows where both backends have predictions, and A2 and
+A3 are re-scored on that same intersection so the comparison is like-for-like.
 
 Market features alone carry no signal. Sentiment adds a stable +0.013…+0.015 IC, but every
 confidence interval contains zero. The lexicon backend is *worse than nothing* (−0.0079): a
 dictionary is not a substitute for a contextual model. A6 differs from A5 only by the date
 policy, which touched 10 of 124,571 articles, so its 0.0011 edge over A5 is noise, not an effect —
 the strict-date rule is not where the signal is lost.
+
+Open-jev does not help. It is a general typed-decision model, not a finance model, and it trails
+FinBERT on the same task (0.0112 vs 0.0134). Averaging the two ranks recovers 0.0137, i.e. it lands
+between its two inputs and still loses to the A5 control measured on the identical rows (0.0156).
+The two columns only open-jev can supply — `novelty_mean` and `company_specific_share` — make things
+*worse*: A8 at 0.0076 is less than half of A5 at 0.0156 despite the richer feature set. The premise
+behind the open-jev branch, that a general model knows which news is genuinely new and
+company-specific, is not supported by this data.
 
 ## The single 2023 holdout
 
@@ -142,13 +159,14 @@ python -m spp.cli backtest --predictions reports/test_2023_predictions.parquet -
 python ops/ablate.py --only a4 a6       # ablation matrices
 ```
 
-Tests: `pytest -q` (216 passing), `ruff check src tests` (clean).
+Tests: `pytest -q` (221 passing), `ruff check src tests` (clean).
 
 ## Limitations
 
-* A3 (open-jev) is not reported as a result: open-jev scores headlines with a general
-  typed-decision model at ~3.4 items/s on CPU, so the full 92,927-text corpus is a 7.5-hour job.
-  The backend is implemented and batched; the ablation is pending.
+* A3 (open-jev) does not beat FinBERT: 0.0112 against 0.0134, and both intervals contain zero. What
+  the ablation does establish is that a general typed-decision model brings no extra edge on a
+  finance task, and that its two unique columns (`novelty_mean`, `company_specific_share`) do not
+  rescue it — A8 with them scores 0.0076 against A5's 0.0156.
 * Final models are shallow (6–18 trees): early-stopping IC peaks almost immediately.
 * The corpus has a median of 1 article per ticker-day (max 19), so same-day sentiment blocks are
   sparse and most of the information lives in multi-day aggregates.

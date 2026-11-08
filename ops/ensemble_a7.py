@@ -140,8 +140,8 @@ def main() -> int:
     ensemble_frame["y_raw"] = np.nan
     ensemble_frame["score_rank"] = ensemble_frame["y_pred"]
     ensemble_frame["y_pred_seed_mean"] = ensemble_frame["y_pred"]
-    (out_dir / "predictions.parquet").write_parquet(
-        ensemble_frame.sort_values(["date", "fold", "ticker"], kind="stable"), index=False
+    ensemble_frame.sort_values(["date", "fold", "ticker"], kind="stable").to_parquet(
+        out_dir / "predictions.parquet", index=False
     )
 
     block = results["a7"]["aggregate"]["ic"]
