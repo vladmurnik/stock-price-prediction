@@ -1,0 +1,121 @@
+{
+  "config": {
+    "lag_minutes": 5,
+    "horizons": [
+      60,
+      120,
+      180
+    ],
+    "cost_bps": 5.0,
+    "spread_bps": 5.0,
+    "interval": "60m"
+  },
+  "n_events": 177,
+  "n_dates": 6,
+  "funnel": {
+    "total": 105,
+    "kept": 59,
+    "duplicate": 8,
+    "no_publication_time": 0,
+    "no_bars_for_session": 24,
+    "after_close": 14,
+    "no_entry_bar": 0,
+    "no_exit_bar": 0,
+    "missing_spy": 0,
+    "zero_direction": 0,
+    "rejected_lag": 0
+  },
+  "horizons": {
+    "h60": {
+      "n_events": 59,
+      "n_dates": 6,
+      "events_per_date": 9.833333333333334,
+      "horizon_minutes": 60,
+      "mean_y": 0.0002667716741926884,
+      "median_y": 0.0010106106760044975,
+      "std_y": 0.006547285551996849,
+      "mean_abs_y": 0.004864854658593916,
+      "hit_rate_up": 0.6440677966101694,
+      "cluster": {
+        "mean": 0.0002667716741926884,
+        "se": 0.0006540153518252868,
+        "t": 0.4078981838089232,
+        "p": 0.6833484261985086,
+        "n": 59.0,
+        "n_clusters": 6,
+        "inflation": 0.7672778587122193
+      },
+      "cost_per_round_trip": 0.0015,
+      "net_mean": -0.0012332283258073115,
+      "breakeven_hit_rate": 0.6541669901021816,
+      "event_ic": {
+        "mean": NaN,
+        "n_dates": 0
+      },
+      "mde": 0.001831242985110803
+    },
+    "h120": {
+      "n_events": 59,
+      "n_dates": 6,
+      "events_per_date": 9.833333333333334,
+      "horizon_minutes": 120,
+      "mean_y": -0.00011291743227391209,
+      "median_y": 0.0002273377465732418,
+      "std_y": 0.006363600353404515,
+      "mean_abs_y": 0.0038123422128068583,
+      "hit_rate_up": 0.5254237288135594,
+      "cluster": {
+        "mean": -0.00011291743227391209,
+        "se": 0.0007370128654872304,
+        "t": -0.15320958094708934,
+        "p": 0.8782330023726992,
+        "n": 59.0,
+        "n_clusters": 6,
+        "inflation": 0.889606971442356
+      },
+      "cost_per_round_trip": 0.0015,
+      "net_mean": -0.0016129174322739121,
+      "breakeven_hit_rate": 0.6967294534788913,
+      "event_ic": {
+        "mean": NaN,
+        "n_dates": 0
+      },
+      "mde": 0.0020636360233642448
+    },
+    "h180": {
+      "n_events": 59,
+      "n_dates": 6,
+      "events_per_date": 9.833333333333334,
+      "horizon_minutes": 180,
+      "mean_y": -0.0011372595195718344,
+      "median_y": 0.0002273377465732418,
+      "std_y": 0.006960024986642917,
+      "mean_abs_y": 0.0044523961380990166,
+      "hit_rate_up": 0.5084745762711864,
+      "cluster": {
+        "mean": -0.0011372595195718344,
+        "se": 0.000929292344544846,
+        "t": -1.223790905249357,
+        "p": 0.221031116082111,
+        "n": 59.0,
+        "n_clusters": 6,
+        "inflation": 1.02557533263547
+      },
+      "cost_per_round_trip": 0.0015,
+      "net_mean": -0.0026372595195718346,
+      "breakeven_hit_rate": 0.6684486233339108,
+      "event_ic": {
+        "mean": NaN,
+        "n_dates": 0
+      },
+      "mde": 0.0026020185647255686
+    }
+  },
+  "lag_violations": 0,
+  "truncated_share": 0.05084745762711865,
+  "source": {
+    "news": "data/interim/news_gdelt_pilot.parquet",
+    "start": "2026-10-01",
+    "end": "2026-10-23"
+  }
+}
