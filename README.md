@@ -1,3 +1,14 @@
+**🇬🇧 English** · [🇷🇺 Русская версия](README.ru.md)
+
+---
+
+> **Кратко по-русски.** Можно ли по сентименту вчерашних новостей предсказать доходность акции на следующий день?
+> **Ответ: нет.** Сигнал есть, но он статистически неотличим от нуля вне выборки (holdout 2023: IC 0.0127, 95% CI [−0.0102, 0.0356], p 0.25),
+> а при дневном ребалансе издержки превышают эдж примерно в 30 раз (net Sharpe −6.75).
+> Отрицательный результат и есть результат. Полный русский текст — [README.ru.md](README.ru.md).
+
+---
+
 # News Sentiment → Next-Day Equity Returns
 
 Can the sentiment of yesterday's news predict tomorrow's stock return? This repository contains the
