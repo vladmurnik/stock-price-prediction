@@ -18,6 +18,7 @@ SPEC = [
     ("a4-lexicon", "A4", "market + sentiment", "lexicon", "false"),
     ("a6-strict-dates", "A6", "market + sentiment", "finbert", "true"),
     ("a3-openjev", "A3", "sentiment only", "open-jev", "false"),
+    ("a7-ensemble", "A7", "ensemble of A2 + A3", "finbert + open-jev", "false"),
     ("a8-openjev", "A8", "market + sentiment + typed flags", "open-jev", "false"),
 ]
 

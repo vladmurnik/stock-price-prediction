@@ -1,4 +1,4 @@
-# News Sentiment → Next-Day Equity Returns
+﻿# News Sentiment → Next-Day Equity Returns
 
 Can the sentiment of yesterday's news predict tomorrow's stock return? This repository contains the
 full, pre-registered attempt: data ingestion, a leakage-gated feature pipeline, purged
@@ -114,7 +114,7 @@ python -m spp.cli backtest --predictions reports/test_2023_predictions.parquet -
 python ops/ablate.py --only a4 a6       # ablation matrices
 ```
 
-Tests: `pytest -q` (214 passing), `ruff check src tests` (clean).
+Tests: `pytest -q` (216 passing), `ruff check src tests` (clean).
 
 ## Limitations
 

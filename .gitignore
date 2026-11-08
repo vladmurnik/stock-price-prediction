@@ -6,29 +6,26 @@ __pycache__/
 build/
 dist/
 
-# Data (regenerated from sources; too large for git)
-data/
+# Data, produced by the fetch/score steps (see README).
+# The leading slash matters: `/data/` is the project data root only, so the
+# ingestion package `src/spp/data/` stays tracked.
+/data/
 *.parquet
 
 # Logs and local agent state
-ops/logs/
-ops/inbox/
-ops/queue.json.lock
+/ops/logs/
+/ops/inbox/
 *.log
 
-# OS / editor
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Test scratch.pytest_tmp/
-.pytest_cache/
-
+# Generated run artifacts; every quoted number is copied into /results/
+/reports/
 
 # Test scratch
 .pytest_tmp/
 .pytest_cache/
 .scratch_smoke.py
 
-# Generated run artifacts (evidence is copied into results/)
-reports/
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -26,11 +26,11 @@ from pathlib import Path
 import pandas as pd
 
 from spp.config import load_config
-from spp.data.normalize import SignalPolicy
 from spp.data.news_fnspid import _finalize_news
+from spp.data.normalize import SignalPolicy
 from spp.data.prices import load_prices
 from spp.data.store import read_parquet
-from spp.features.assemble import build_feature_matrix
+from spp.features.assemble import MARKET_FEATURES, build_feature_matrix
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -145,7 +145,7 @@ def run_openjev(which: str, config, prices, news, start, end) -> Path:
         )
     sentiment = read_parquet(path)
     print(f"[{which}] sentiment rows={len(sentiment)} from {path.name}")
-    return _build(
+    built = _build(
         f"{which}-openjev",
         sentiment=sentiment,
         news=news,
@@ -154,6 +154,16 @@ def run_openjev(which: str, config, prices, news, start, end) -> Path:
         start=start,
         end=end,
     )
+    if which != "a3":
+        return built
+    # A3 is the sentiment-only ablation, so the market block is dropped from the matrix.
+    matrix = read_parquet(built)
+    dropped = [c for c in MARKET_FEATURES if c in matrix.columns]
+    subset = matrix.drop(columns=dropped)
+    target = OUT / "a3-openjev-sent.parquet"
+    subset.to_parquet(target, index=False)
+    print(f"[a3] dropped {len(dropped)} market columns -> {target} ({len(subset.columns)} cols)")
+    return target
 
 
 def main() -> int:
