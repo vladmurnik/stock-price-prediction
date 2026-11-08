@@ -1,4 +1,4 @@
-﻿# News Sentiment → Next-Day Equity Returns
+# News Sentiment → Next-Day Equity Returns
 
 Can the sentiment of yesterday's news predict tomorrow's stock return? This repository contains the
 full, pre-registered attempt: data ingestion, a leakage-gated feature pipeline, purged
