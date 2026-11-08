@@ -77,7 +77,8 @@ def main() -> int:
     if args.start:
         news = news.loc[news["published_at"] >= pd.Timestamp(args.start, tz="UTC")]
     if args.end:
-        news = news.loc[news["published_at"] < pd.Timestamp(args.end, tz="UTC") + pd.Timedelta(days=1)]
+        cutoff = pd.Timestamp(args.end, tz="UTC") + pd.Timedelta(days=1)
+        news = news.loc[news["published_at"] < cutoff]
     if news.empty:
         raise SystemExit("no articles in the requested window")
     tickers = sorted(news["ticker"].dropna().astype(str).unique())
