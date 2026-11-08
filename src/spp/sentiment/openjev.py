@@ -156,7 +156,7 @@ class OpenJevBackend:
             for qi, question in enumerate(questions):
                 values = probs[row, qi, : len(question.options)].tolist()
                 read = readout(question.kind, values)
-                keyed = dict(zip(question.options, values))
+                keyed = dict(zip(question.options, values, strict=True))
                 if question.kind == "choice":
                     decisions.append(
                         {

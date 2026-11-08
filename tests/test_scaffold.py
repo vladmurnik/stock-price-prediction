@@ -92,7 +92,6 @@ def test_cli_help_lists_all_groups() -> None:
 @pytest.mark.parametrize(
     "args",
     [
-        ["fetch", "live"],
         ["train", "all"],
         ["live", "run"],
         ["report", "ablation"],

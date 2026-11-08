@@ -42,9 +42,14 @@ negative result is the deliverable — every number below is read from an artifa
 | A1 | market only (32) | 0.0007 | [−0.0151, 0.0165] | 0.0039 |
 | A2 | sentiment only (30) | 0.0134 | [−0.0052, 0.0320] | 0.0074 |
 | **A5** | market + sentiment (62) | **0.0156** | [−0.0069, 0.0381] | 0.0054 |
+| A4 | market + sentiment, lexicon backend | −0.0079 | [−0.0228, 0.0069] | 0.0000 |
+| A6 | market + sentiment, strict_dates = true | 0.0167 | [−0.0021, 0.0356] | 0.0042 |
 
 Market features alone carry no signal. Sentiment adds a stable +0.013…+0.015 IC, but every
-confidence interval contains zero.
+confidence interval contains zero. The lexicon backend is *worse than nothing* (−0.0079): a
+dictionary is not a substitute for a contextual model. A6 differs from A5 only by the date
+policy, which touched 10 of 124,571 articles, so its 0.0011 edge over A5 is noise, not an effect —
+the strict-date rule is not where the signal is lost.
 
 ## The single 2023 holdout
 
