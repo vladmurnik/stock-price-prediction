@@ -31,6 +31,7 @@ import pandas as pd
 __all__ = [
     "BREAKEVEN_TOLERANCE",
     "MDE_Z_SUM",
+    "MIN_CLUSTERS_FOR_T",
     "cluster_tstat",
     "evaluate_by_horizon",
     "evaluate_events",
@@ -41,6 +42,10 @@ __all__ = [
 #: Two-sided alpha 0.05 and power 0.80 give ``1.96 + 0.84``; the sum is the multiplier on the
 #: standard error that makes a true effect detectable four times out of five.
 MDE_Z_SUM = 2.802
+
+#: A cluster-robust standard error needs enough clusters for its own asymptotics. Below this the
+#: reported t is arithmetic, not evidence: two day-means differing by a hair produce |t| > 10.
+MIN_CLUSTERS_FOR_T = 5
 
 #: A cost estimate is never exact, so the break-even hit rate is reported with this tolerance
 #: before it is called a failure.
@@ -214,6 +219,7 @@ def evaluate_events(
         "mean_abs_y": mean_abs,
         "hit_rate_up": hit_up,
         "cluster": clustered,
+        "cluster_reliable": bool(clustered.get("n_clusters", 0) >= MIN_CLUSTERS_FOR_T),
         "cost_per_round_trip": cost,
         "net_mean": float(np.mean(y)) - cost,
         "breakeven_hit_rate": _breakeven_hit_rate(mean_abs, cost),

@@ -5,6 +5,8 @@
 > **Кратко по-русски.** Можно ли по сентименту вчерашних новостей предсказать доходность акции на следующий день?
 > **Ответ: нет.** Сигнал есть, но он статистически неотличим от нуля вне выборки (holdout 2023: IC 0.0127, 95% CI [−0.0102, 0.0356], p 0.25),
 > а при дневном ребалансе издержки превышают эдж примерно в 30 раз (net Sharpe −6.75).
+> Внутридневная ветка (сделка на 1–3 часа после новости) запущена отдельно: 59 событий, MDE 22–30 бп —
+> «не измеримо», а не «эффекта нет» (раздел *Intraday branch*).
 > Отрицательный результат и есть результат. Полный русский текст — [README.ru.md](README.ru.md).
 
 ---
@@ -157,9 +159,54 @@ python -m spp.cli train gbdt            # purged CV, writes reports/runs/<id>/
 python -m spp.cli --config configs/final.yaml train test2023   # refuses to run twice
 python -m spp.cli backtest --predictions reports/test_2023_predictions.parquet --include-test
 python ops/ablate.py --only a4 a6       # ablation matrices
+python ops/intraday_gdelt.py --news data/interim/news_gdelt_pilot.parquet \
+    --start 2026-10-01 --end 2026-10-23   # intraday branch, cached bars only
 ```
 
-Tests: `pytest -q` (221 passing), `ruff check src tests` (clean).
+Tests: `pytest -q` (265 passing, 2 skipped), `ruff check src tests ops` (clean).
+
+## Intraday branch: one article, one trade
+
+The daily horizon may simply be the wrong one: a news shock decays in hours, not days, and a
+once-a-day rebalance averages it away. `docs/intraday-design.md` pre-registers the alternative
+before any number was computed: one article = one trade, entry at the open of the first bar at or
+after `published_at + 5 min`, exit at the close of the bar **containing** `entry + horizon`
+(60/120/180 min), target = ticker return minus SPY over identical timestamps, 15 bps per round
+trip. `configs/intraday.yaml` freezes those choices so the experiment cannot be re-tuned after
+seeing the result.
+
+The two free windows do not overlap: FNSPID ends 2023-12-16, yfinance 60-minute bars begin
+2024-11-11. The branch therefore runs on GDELT headlines for October 2026, and the sample is a
+pilot, not a test.
+
+| horizon | events | mean excess | net | hit rate | cluster t | MDE |
+|---|---|---|---|---|---|---|
+| 60 min | 59 | +2.67 bps | −12.33 bps | 0.644 | +0.41 | 18.3 bps |
+| 120 min | 59 | −1.13 bps | −16.13 bps | 0.525 | −0.15 | 20.6 bps |
+| 180 min | 59 | −11.37 bps | −26.37 bps | 0.509 | −1.22 | 26.0 bps |
+
+**Verdict: not measurable.** The sample cannot resolve anything smaller than 18–22 bps, and the
+plausible size of a news effect is 8–10 bps (the daily study's gross quintile spread). Three
+measured facts forbid stronger wording:
+
+* the five-minute lag is **not** realised: on 60-minute bars the median entry delay is **75
+  minutes**, the 75th percentile 247 minutes, and only 45.8 % of events enter within one bar. The
+  branch measures the first tradeable bar after publication, not the five-minute reaction;
+* **35 of 59 events fall on a single session** (2026-10-01), so the effective sample is six days;
+* a bootstrap over sessions puts the MDE at 22–30 bps, 13–21 % above the analytic formula.
+
+The high hit rate is not an edge: the average loss is 1.47× the average win (payoff ratio 0.68) and
+the break-even hit rate is 0.654 before costs, against 0.644 realised. Splitting by the 50-session
+daily trend — the "trade with the trend" variant — leaves 17 events on **two sessions**, which is
+why the report prints a dash instead of the |t| = 13 that arithmetic alone produces.
+
+Why the sample is small is a data problem, not a coding one: GDELT returns 10.5 usable articles per
+request, drops **84.5 %** of raw hits because attribution is headline-only, and answers 429 on 20 %
+of requests at one request per two minutes. Reaching 2,000 events (MDE ≈ 8 bps) needs ≈ 340
+requests and 7–20 hours of crawling, with non-random truncation of the busiest news days. Measured
+numbers and the plan: `docs/data-intraday-supply.md`. Audits:
+`docs/audits/R16-intraday-lookahead.md`, `docs/audits/G7-intraday-validation.md`,
+`docs/audits/S1-sentiment-classification.md`.
 
 ## Limitations
 

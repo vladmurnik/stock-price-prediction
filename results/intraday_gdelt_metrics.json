@@ -45,13 +45,24 @@
         "n_clusters": 6,
         "inflation": 0.7672778587122193
       },
+      "cluster_reliable": true,
       "cost_per_round_trip": 0.0015,
       "net_mean": -0.0012332283258073115,
       "breakeven_hit_rate": 0.6541669901021816,
       "event_ic": {
-        "mean": NaN,
-        "n_dates": 0
+        "mean": -0.17792645869689827,
+        "se": 0.27815772744325623,
+        "t": -0.6396603119113238,
+        "n_dates": 3
       },
+      "score_quintiles": {
+        "top": -0.00026942754852054586,
+        "bottom": 0.002115197540662092,
+        "spread": -0.002384625089182638,
+        "n_dates": 3.0
+      },
+      "hit_rate_directional": 0.5084745762711864,
+      "n_directional": 59,
       "mde": 0.001831242985110803
     },
     "h120": {
@@ -73,13 +84,24 @@
         "n_clusters": 6,
         "inflation": 0.889606971442356
       },
+      "cluster_reliable": true,
       "cost_per_round_trip": 0.0015,
       "net_mean": -0.0016129174322739121,
       "breakeven_hit_rate": 0.6967294534788913,
       "event_ic": {
-        "mean": NaN,
-        "n_dates": 0
+        "mean": -0.07533183408963684,
+        "se": 0.3592194085622123,
+        "t": -0.20970981047810036,
+        "n_dates": 3
       },
+      "score_quintiles": {
+        "top": -0.0010119679830083255,
+        "bottom": 0.0005554431910354618,
+        "spread": -0.0015674111740437873,
+        "n_dates": 3.0
+      },
+      "hit_rate_directional": 0.6610169491525424,
+      "n_directional": 59,
       "mde": 0.0020636360233642448
     },
     "h180": {
@@ -101,16 +123,268 @@
         "n_clusters": 6,
         "inflation": 1.02557533263547
       },
+      "cluster_reliable": true,
       "cost_per_round_trip": 0.0015,
       "net_mean": -0.0026372595195718346,
       "breakeven_hit_rate": 0.6684486233339108,
       "event_ic": {
-        "mean": NaN,
-        "n_dates": 0
+        "mean": -0.2811571459002451,
+        "se": 0.24568604969199756,
+        "t": -1.1443757032713726,
+        "n_dates": 3
       },
+      "score_quintiles": {
+        "top": -0.0037758503627112667,
+        "bottom": -0.00243435434187712,
+        "spread": -0.0013414960208341467,
+        "n_dates": 3.0
+      },
+      "hit_rate_directional": 0.4406779661016949,
+      "n_directional": 59,
       "mde": 0.0026020185647255686
     }
   },
+  "by_trend": {
+    "trend_up": {
+      "h60": {
+        "n_events": 17,
+        "n_dates": 2,
+        "events_per_date": 8.5,
+        "horizon_minutes": 60,
+        "mean_y": -0.0028326886300575173,
+        "median_y": -0.007321514367624071,
+        "std_y": 0.009262711399427422,
+        "mean_abs_y": 0.008159898811470005,
+        "hit_rate_up": 0.47058823529411764,
+        "cluster": {
+          "mean": -0.0028326886300575173,
+          "se": 0.0009822763058491364,
+          "t": -2.8838002232058093,
+          "p": 0.003929079243766953,
+          "n": 17.0,
+          "n_clusters": 2,
+          "inflation": 0.43724011122789186
+        },
+        "cluster_reliable": false,
+        "cost_per_round_trip": 0.0015,
+        "net_mean": -0.004332688630057518,
+        "breakeven_hit_rate": 0.591912904476923,
+        "event_ic": {
+          "mean": 0.5651737855805287,
+          "se": NaN,
+          "t": NaN,
+          "n_dates": 1
+        },
+        "score_quintiles": {
+          "top": 0.0049948727985017856,
+          "bottom": -0.007321514367624071,
+          "spread": 0.012316387166125858,
+          "n_dates": 1.0
+        },
+        "hit_rate_directional": 0.8235294117647058,
+        "n_directional": 17,
+        "mde": 0.002750373656377581
+      },
+      "h120": {
+        "n_events": 17,
+        "n_dates": 2,
+        "events_per_date": 8.5,
+        "horizon_minutes": 120,
+        "mean_y": -0.0026433245699728166,
+        "median_y": -0.00024388854951629124,
+        "std_y": 0.008117706775897314,
+        "mean_abs_y": 0.0038122387355243675,
+        "hit_rate_up": 0.47058823529411764,
+        "cluster": {
+          "mean": -0.0026433245699728166,
+          "se": 0.0005228216414699714,
+          "t": -5.055882083497567,
+          "p": 4.284059860193423e-07,
+          "n": 17.0,
+          "n_clusters": 2,
+          "inflation": 0.26554899193204934
+        },
+        "cluster_reliable": false,
+        "cost_per_round_trip": 0.0015,
+        "net_mean": -0.004143324569972817,
+        "breakeven_hit_rate": 0.696734793393478,
+        "event_ic": {
+          "mean": 0.5341202808783018,
+          "se": NaN,
+          "t": NaN,
+          "n_dates": 1
+        },
+        "score_quintiles": {
+          "top": 0.0023865189422003588,
+          "bottom": -0.00024388854951629124,
+          "spread": 0.00263040749171665,
+          "n_dates": 1.0
+        },
+        "hit_rate_directional": 0.8235294117647058,
+        "n_directional": 17,
+        "mde": 0.0014639005961159194
+      },
+      "h180": {
+        "n_events": 17,
+        "n_dates": 2,
+        "events_per_date": 8.5,
+        "horizon_minutes": 180,
+        "mean_y": -0.0036481460605197616,
+        "median_y": -0.0011458748105921401,
+        "std_y": 0.0087145591124939,
+        "mean_abs_y": 0.004729167952297464,
+        "hit_rate_up": 0.4117647058823529,
+        "cluster": {
+          "mean": -0.0036481460605197616,
+          "se": 0.00027427851338272715,
+          "t": -13.30088170424474,
+          "p": 0.0,
+          "n": 17.0,
+          "n_clusters": 2,
+          "inflation": 0.12976896099001162
+        },
+        "cluster_reliable": false,
+        "cost_per_round_trip": 0.0015,
+        "net_mean": -0.005148146060519762,
+        "breakeven_hit_rate": 0.6585902652570511,
+        "event_ic": {
+          "mean": -0.4347490658311759,
+          "se": NaN,
+          "t": NaN,
+          "n_dates": 1
+        },
+        "score_quintiles": {
+          "top": 7.2291984577847286e-06,
+          "bottom": 0.0011458748105921401,
+          "spread": -0.0011386456121343553,
+          "n_dates": 1.0
+        },
+        "hit_rate_directional": 0.058823529411764705,
+        "n_directional": 17,
+        "mde": 0.000767979837471636
+      }
+    },
+    "trend_down": {
+      "h60": {
+        "n_events": 40,
+        "n_dates": 6,
+        "events_per_date": 6.666666666666667,
+        "horizon_minutes": 60,
+        "mean_y": 0.0014118703294923763,
+        "median_y": 0.0011100259641901311,
+        "std_y": 0.004733970202494417,
+        "mean_abs_y": 0.0035221930688349888,
+        "hit_rate_up": 0.7,
+        "cluster": {
+          "mean": 0.0014118703294923763,
+          "se": 0.0005123276086756186,
+          "t": 2.755795911803584,
+          "p": 0.005854951695307253,
+          "n": 40.0,
+          "n_clusters": 6,
+          "inflation": 0.6844665607522092
+        },
+        "cluster_reliable": true,
+        "cost_per_round_trip": 0.0015,
+        "net_mean": -8.812967050762376e-05,
+        "breakeven_hit_rate": 0.7129355164077,
+        "event_ic": {
+          "mean": -0.28249257728413196,
+          "se": 0.22605496927032884,
+          "t": -1.24966320446737,
+          "n_dates": 3
+        },
+        "score_quintiles": {
+          "top": -0.0008511657958633192,
+          "bottom": 0.0031177965130285944,
+          "spread": -0.003968962308891913,
+          "n_dates": 3.0
+        },
+        "hit_rate_directional": 0.35,
+        "n_directional": 40,
+        "mde": 0.0014345173042917322
+      },
+      "h120": {
+        "n_events": 40,
+        "n_dates": 6,
+        "events_per_date": 6.666666666666667,
+        "horizon_minutes": 120,
+        "mean_y": 0.0009423479216924075,
+        "median_y": 0.00039091567287558027,
+        "std_y": 0.005364420588017179,
+        "mean_abs_y": 0.003851523001114995,
+        "hit_rate_up": 0.55,
+        "cluster": {
+          "mean": 0.0009423479216924075,
+          "se": 0.00038238625939616494,
+          "t": 2.4643875101069037,
+          "p": 0.013724763737438028,
+          "n": 40.0,
+          "n_clusters": 6,
+          "inflation": 0.45082651734837126
+        },
+        "cluster_reliable": true,
+        "cost_per_round_trip": 0.0015,
+        "net_mean": -0.0005576520783075926,
+        "breakeven_hit_rate": 0.6947281633221142,
+        "event_ic": {
+          "mean": -0.022210740113576228,
+          "se": 0.3279996285497936,
+          "t": -0.06771574776403876,
+          "n_dates": 3
+        },
+        "score_quintiles": {
+          "top": -0.000597044642262771,
+          "bottom": -0.00021959170497515886,
+          "spread": -0.0003774529372876121,
+          "n_dates": 3.0
+        },
+        "hit_rate_directional": 0.6,
+        "n_directional": 40,
+        "mde": 0.0010706815263092618
+      },
+      "h180": {
+        "n_events": 40,
+        "n_dates": 6,
+        "events_per_date": 6.666666666666667,
+        "horizon_minutes": 180,
+        "mean_y": -0.00025474235654894263,
+        "median_y": 0.0005594834565006424,
+        "std_y": 0.00605271120393722,
+        "mean_abs_y": 0.004429641283068242,
+        "hit_rate_up": 0.525,
+        "cluster": {
+          "mean": -0.00025474235654894263,
+          "se": 0.000757073522534152,
+          "t": -0.33648298212337896,
+          "p": 0.7365066825180517,
+          "n": 40.0,
+          "n_clusters": 6,
+          "inflation": 0.7910758028096274
+        },
+        "cluster_reliable": true,
+        "cost_per_round_trip": 0.0015,
+        "net_mean": -0.0017547423565489426,
+        "breakeven_hit_rate": 0.6693139358409862,
+        "event_ic": {
+          "mean": -0.18083634357211473,
+          "se": 0.2638071180624249,
+          "t": -0.6854869758644013,
+          "n_dates": 3
+        },
+        "score_quintiles": {
+          "top": -0.004100750736265109,
+          "bottom": -0.003596468140988561,
+          "spread": -0.0005042825952765481,
+          "n_dates": 3.0
+        },
+        "hit_rate_directional": 0.575,
+        "n_directional": 40,
+        "mde": 0.0021198058630956256
+      }
+    }
+  },
+  "trend_unassigned": 6,
   "lag_violations": 0,
   "truncated_share": 0.05084745762711865,
   "source": {

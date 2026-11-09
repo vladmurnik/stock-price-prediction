@@ -13,7 +13,7 @@ import pandas as pd
 import pytest
 
 from spp.live.events import build_events
-from spp.live.intraday import attach_trend, evaluate_panel
+from spp.live.intraday import attach_trend, daily_closes, evaluate_panel
 
 
 def _bars() -> pd.DataFrame:
@@ -141,3 +141,15 @@ def test_evaluation_refuses_to_invent_an_excess_return_without_spy() -> None:
     bars = _bars().loc[lambda f: f["ticker"] != "SPY"]
     with pytest.raises(ValueError, match="benchmark"):
         build_events(_news(), bars, horizons=(60,))
+
+
+def test_daily_closes_keep_the_last_bar_of_each_session() -> None:
+    """The trend filter needs one close per session, taken from the same bars as the events."""
+    bars = _bars()
+    daily = daily_closes(bars)
+    assert list(daily.columns) == ["ticker", "date", "close"]
+    assert set(daily["ticker"]) == {"AAPL", "SPY"}
+    real = daily.loc[daily["ticker"] == "AAPL"].sort_values("date")
+    assert len(real) == 1
+    session = bars.loc[bars["ticker"] == "AAPL"].sort_values("ts")
+    assert real["close"].iloc[-1] == pytest.approx(float(session["close"].iloc[-1]))

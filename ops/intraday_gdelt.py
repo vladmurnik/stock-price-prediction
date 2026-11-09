@@ -25,7 +25,6 @@ from pathlib import Path
 import pandas as pd
 
 from spp.config import load_config
-from spp.data.prices import load_prices
 from spp.data.store import read_parquet
 from spp.live.intraday import build_panel, evaluate_panel, load_intraday_config, write_report
 from spp.logging import get_logger
@@ -58,6 +57,55 @@ def _score_missing(news: pd.DataFrame, backend_name: str = "finbert") -> pd.Data
     work.loc[index, "p_neu"] = [float(item.p_neu) for item in scored]
     work["score"] = work["p_pos"].fillna(0.0) - work["p_neg"].fillna(0.0)
     return work
+
+
+def _daily_prices(
+    tickers: list[str], start: str, end: str, cache_path: Path, *, refresh: bool = False
+) -> pd.DataFrame:
+    """Daily closes for the trend filter, long enough to fill a 50-session mean.
+
+    ``load_prices`` cannot serve this window: its cache holds the daily study's tickers only and it
+    raises on a tz-naive ``Timestamp`` (``datetime.date`` vs ``Timestamp`` comparison). The trend
+    flag therefore comes from a small, explicit yfinance call that is cached next to the bars.
+    """
+    if cache_path.is_file() and not refresh:
+        cached = pd.read_parquet(cache_path)
+        cached["date"] = pd.to_datetime(cached["date"])
+        if not cached.empty and cached["date"].max() >= pd.Timestamp(end) - pd.Timedelta(days=5):
+            return cached
+    import yfinance as yf
+
+    first = (pd.Timestamp(start) - pd.Timedelta(days=150)).strftime("%Y-%m-%d")
+    last = (pd.Timestamp(end) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    raw = yf.download(
+        list(tickers),
+        start=first,
+        end=last,
+        interval="1d",
+        auto_adjust=True,
+        actions=False,
+        group_by="column",
+        threads=True,
+        progress=False,
+    )
+    if raw is None or raw.empty:
+        raise RuntimeError("yfinance returned no daily bars for the trend filter")
+    if isinstance(raw.columns, pd.MultiIndex):
+        close = raw.xs("Close", axis=1, level=0)
+    else:
+        close = raw.loc[:, ["Close"]]
+        close.columns = [tickers[0]]
+    frame = (
+        close.stack(future_stack=True)
+        .rename("close")
+        .reset_index()
+    )
+    frame.columns = ["date", "ticker", "close"]
+    frame["date"] = pd.to_datetime(frame["date"]).dt.tz_localize(None).dt.normalize()
+    frame = frame.dropna(subset=["close"]).sort_values(["ticker", "date"])
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    frame.to_parquet(cache_path, index=False)
+    return frame
 
 
 def main() -> int:
@@ -100,7 +148,17 @@ def main() -> int:
     prices = None
     if not args.no_trend:
         try:
-            prices = load_prices(DATA / "cache", pd.Timestamp(args.start), pd.Timestamp(args.end))
+            prices = _daily_prices(
+                tickers + ["SPY"],
+                args.start or "2026-01-01",
+                args.end or "2026-11-09",
+                DATA / "cache" / "minutes" / "daily_pilot.parquet",
+            )
+            LOG.info(
+                "trend filter: %d daily closes, %d tickers",
+                len(prices),
+                prices["ticker"].nunique(),
+            )
         except Exception as exc:  # noqa: BLE001 - the trend split is optional and reported
             LOG.warning("trend filter unavailable: %s", exc)
 

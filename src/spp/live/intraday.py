@@ -35,12 +35,13 @@ from spp.backtest.intraday_eval import (
     minimum_detectable_effect,
 )
 from spp.live.events import DropStats, build_events
-from spp.live.minutes import fetch_minute_bars
+from spp.live.minutes import ET, fetch_minute_bars
 
 __all__ = [
     "DEFAULT_INTRADAY",
     "attach_trend",
     "build_panel",
+    "daily_closes",
     "evaluate_panel",
     "load_event_news",
     "load_intraday_config",
@@ -182,6 +183,26 @@ def load_event_news(
     return merged
 
 
+def daily_closes(bars: pd.DataFrame, *, close_col: str = "close") -> pd.DataFrame:
+    """One close per ``(ticker, session)`` from intraday bars.
+
+    The trend filter needs a daily series that ends on the session before the event. Deriving it
+    from the same bars the events were built on removes a second data source from the pipeline and
+    the adjustment mismatch that comes with it: a split between the daily and the minute series
+    would otherwise show up as a fake trend break.
+    """
+    if bars.empty or close_col not in bars.columns:
+        return pd.DataFrame(columns=["ticker", "date", "close"])
+    stamp_col = "ts" if "ts" in bars.columns else None
+    if stamp_col is None:
+        return pd.DataFrame(columns=["ticker", "date", "close"])
+    work = bars.loc[:, ["ticker", stamp_col, close_col]].copy()
+    work["ts"] = pd.to_datetime(work[stamp_col], utc=True)
+    work["date"] = pd.to_datetime(work["ts"].dt.tz_convert(ET).dt.date)
+    ordered = work.sort_values("ts").drop_duplicates(subset=["ticker", "date"], keep="last")
+    return ordered.rename(columns={close_col: "close"}).loc[:, ["ticker", "date", "close"]]
+
+
 def attach_trend(
     events: pd.DataFrame, prices: pd.DataFrame, *, window: int = 50
 ) -> pd.DataFrame:
@@ -210,6 +231,25 @@ def attach_trend(
     merged["session"] = pd.to_datetime(merged["session"]).dt.date
     merged = merged.merge(lookup, on=["session", "ticker"], how="left")
     return merged
+
+
+def _attach_mde(blocks: dict[str, dict[str, Any]]) -> None:
+    """Write ``mde`` into every horizon block that has a dispersion estimate.
+
+    Without this the trend sub-tables print a t-statistic and no detectable effect, which invites
+    reading a 13-sigma number based on seventeen events as if it were a finding.
+    """
+    for block in blocks.values():
+        if not isinstance(block, dict):
+            continue
+        sigma = block.get("std_y")
+        if sigma is None or not np.isfinite(sigma) or not block.get("n_events"):
+            continue
+        block["mde"] = minimum_detectable_effect(
+            float(sigma),
+            float(block["n_events"]),
+            inflation=float(block.get("cluster", {}).get("inflation") or 1.0),
+        )
 
 
 def evaluate_panel(
@@ -244,6 +284,7 @@ def evaluate_panel(
             min_events_per_date=int(cfg["min_events_per_date"]),
         ),
     }
+    _attach_mde(report["horizons"])
     if "trend_up" in work.columns and work["trend_up"].notna().any():
         split: dict[str, Any] = {}
         for name, mask in (
@@ -251,23 +292,21 @@ def evaluate_panel(
             ("trend_down", work["trend_up"] == False),  # noqa: E712
         ):
             subset = work.loc[mask.fillna(False)]
-            split[name] = evaluate_by_horizon(
+            if subset.empty:
+                split[name] = {"n_events": 0}
+                continue
+            block = evaluate_by_horizon(
                 subset,
                 cost_bps=float(cfg["cost_bps"]),
                 spread_bps=float(cfg["spread_bps"]),
                 min_events_per_date=int(cfg["min_events_per_date"]),
-            ) if not subset.empty else {"n_events": 0}
+            )
+            _attach_mde(block)
+            split[name] = block
         report["by_trend"] = split
-
-    for _horizon_key, block in report["horizons"].items():
-        sigma = block.get("std_y")
-        if sigma is None or not np.isfinite(sigma):
-            continue
-        block["mde"] = minimum_detectable_effect(
-            float(sigma),
-            float(block["n_events"]),
-            inflation=float(block.get("cluster", {}).get("inflation") or 1.0),
-        )
+        # Events without a 50-session history cannot be assigned a regime; the split must say how
+        # many it left out instead of presenting its two halves as the whole sample.
+        report["trend_unassigned"] = int(work["trend_up"].isna().sum())
     entry = pd.to_datetime(work["entry_ts"], utc=True)
     published = pd.to_datetime(work["published_at"], utc=True)
     lag = pd.Timedelta(minutes=int(cfg["lag_minutes"]))
@@ -280,6 +319,14 @@ def write_report(report: dict[str, Any], path: Path | str) -> Path:
     """Markdown that cannot be read as more than the sample supports."""
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
+
+    def _t_cell(block: dict[str, Any]) -> str:
+        """A t-statistic from fewer than five clusters is printed as a dash, not as evidence."""
+        value = float(block.get("cluster", {}).get("t", float("nan")))
+        if not block.get("cluster_reliable", True):
+            return "—"
+        return f"{value:+.2f}"
+
     lines = [
         "# Внутридневная реакция на новости: первый прогон",
         "",
@@ -300,17 +347,16 @@ def write_report(report: dict[str, Any], path: Path | str) -> Path:
         if not block or "mean_y" not in block:
             lines.append(f"| {key} | {block.get('n_events', 0)} | — | — | — | — | — | — |")
             continue
-        cluster = block.get("cluster", {})
         ic = block.get("event_ic", {}).get("mean", float("nan"))
         lines.append(
             "| {h} | {n} | {mean:+.4%} | {net:+.4%} | {hit:.3f} "
-            "| {t:+.2f} | {mde:.4%} | {ic:+.4f} |".format(
+            "| {t} | {mde:.4%} | {ic:+.4f} |".format(
                 h=key,
                 n=block["n_events"],
                 mean=block["mean_y"],
                 net=block["net_mean"],
                 hit=block["hit_rate_up"],
-                t=cluster.get("t", float("nan")),
+                t=_t_cell(block),
                 mde=block.get("mde", float("nan")),
                 ic=ic,
             )
@@ -327,17 +373,28 @@ def write_report(report: dict[str, Any], path: Path | str) -> Path:
             "",
             "## Разбивка по дневному тренду",
             "",
-            "| режим | горизонт | событий | net | t |",
-            "|---|---|---|---|---|",
+            "| режим | горизонт | событий | сессий | net | t | MDE |",
+            "|---|---|---|---|---|---|---|",
         ]
         for mode, block in report["by_trend"].items():
             for key, sub in sorted(block.items()):
                 if not isinstance(sub, dict) or "net_mean" not in sub:
                     continue
                 lines.append(
-                    f"| {mode} | {key} | {sub['n_events']} | {sub['net_mean']:+.4%} | "
-                    f"{sub.get('cluster', {}).get('t', float('nan')):+.2f} |"
+                    f"| {mode} | {key} | {sub['n_events']} | {sub.get('n_dates', 0)} | "
+                    f"{sub['net_mean']:+.4%} | "
+                    f"{_t_cell(sub)} | "
+                    f"{sub.get('mde', float('nan')):.4%} |"
                 )
+        if report.get("trend_unassigned"):
+            lines.append(
+                f"\nБез режима осталось событий: {report['trend_unassigned']} "
+                "(нет 50 завершённых сессий истории)."
+            )
+        lines.append(
+            "\nСессии на строку — обязательный столбец: строка с 17 событиями и 13 сигмами "
+            "на одной сессии не является свидетельством."
+        )
     text = "\n".join(lines) + "\n"
     target.write_text(text, encoding="utf-8")
     return target

@@ -60,6 +60,7 @@ EVENT_COLUMNS = (
     "r_ticker",
     "r_spy",
     "excess",
+    "score",
     "direction",
     "y",
     "truncated",
@@ -313,6 +314,9 @@ def build_events(
                         "r_ticker": r_ticker,
                         "r_spy": r_spy,
                         "excess": excess,
+                        # The score is carried so that a ranking metric can be computed at all.
+                        # Dropping it made event IC permanently NaN while looking like a data gap.
+                        "score": float(score),
                         "direction": direction,
                         "y": excess * direction,
                         "truncated": bool(truncated),

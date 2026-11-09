@@ -171,3 +171,10 @@ def test_signed_direction_respects_the_dead_zone() -> None:
     assert signed_direction(values, dead_zone=0.1).tolist() == [1.0, -1.0, 0.0, 0.0]
     assert signed_direction(pd.Series([0.4]), dead_zone=0.0).tolist() == [1.0]
     assert np.isnan(np.nan)  # keeps numpy imported for readers comparing to the evaluator
+
+
+def test_the_score_is_carried_so_ranking_metrics_exist() -> None:
+    """The event frame must keep ``score``: without it event IC is NaN by construction."""
+    events, _ = build_events(_news([{"score": 0.42}]), _bars(), horizons=(60,))
+    assert "score" in events.columns
+    assert float(events["score"].iloc[0]) == pytest.approx(0.42)

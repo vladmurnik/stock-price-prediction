@@ -120,3 +120,17 @@ def test_power_improves_with_more_events_and_degrades_with_clustering() -> None:
     assert clustered == pytest.approx(2.2 * tight)
     assert np.isnan(minimum_detectable_effect(0.009, 0))
     assert np.isnan(minimum_detectable_effect(float("nan"), 100))
+
+
+def test_a_t_statistic_from_two_clusters_is_not_called_reliable() -> None:
+    """Two day-means produce a large |t|; the report must refuse to present it as a result."""
+    frame = pd.DataFrame(
+        {
+            "date": ["2026-10-01"] * 16 + ["2026-10-02"],
+            "y": [0.01] * 16 + [0.0105],
+        }
+    )
+    report = evaluate_events(frame)
+    assert report["cluster"]["n_clusters"] == 2
+    assert report["cluster_reliable"] is False
+    assert report["cluster"]["t"] > 5.0  # arithmetic, not evidence
