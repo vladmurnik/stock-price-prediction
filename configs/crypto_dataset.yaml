@@ -1,0 +1,119 @@
+# Crypto dataset design. Frozen at version 1 on 2026-11-09, before the first event was built.
+# Any change after the first result turns the experiment into a search; freeze it and note the change
+# in docs/crypto-results.md instead.
+version: 1
+frozen_on: "2026-11-09"
+
+market:
+  venue: binance
+  type: spot
+  quote: USDT
+  bar: 1m
+  benchmark: BTCUSDT
+  # Binance Vision serves monthly 1m ZIPs; measured size 2.17 MB for BTCUSDT-1m-2024-01.zip.
+  archive: https://data.binance.vision/data/spot/monthly/klines
+
+period:
+  start: "2023-01"
+  end: "2026-11"
+
+symbols: [BTCUSDT, ETHUSDT, SOLUSDT, BNBUSDT, XRPUSDT, DOGEUSDT, AVAXUSDT, LINKUSDT, ADAUSDT,
+          TONUSDT, ARBUSDT, OPUSDT]
+
+# Headline attribution. Weak aliases are ordinary English words ("link", "op", "ada", "ton"), so they
+# only count when the same headline carries a crypto context word. Everything is matched on word
+# boundaries and case-insensitively.
+aliases:
+  BTCUSDT: [bitcoin, btc, xbt]
+  ETHUSDT: [ethereum, ether, eth]
+  SOLUSDT: [solana]
+  BNBUSDT: [bnb, binance coin]
+  XRPUSDT: [xrp, ripple]
+  DOGEUSDT: [dogecoin, doge]
+  AVAXUSDT: [avalanche, avax]
+  LINKUSDT: [chainlink]
+  ADAUSDT: [cardano]
+  TONUSDT: [toncoin, the open network]
+  ARBUSDT: [arbitrum]
+  OPUSDT: [optimism, op mainnet]
+
+weak_aliases:
+  SOLUSDT: [sol]
+  LINKUSDT: [link]
+  ADAUSDT: [ada]
+  TONUSDT: [ton]
+  ARBUSDT: [arb]
+  OPUSDT: [op]
+
+crypto_context: [crypto, token, coin, blockchain, defi, exchange, whale, altcoin, stablecoin, nft,
+                 onchain, mainnet, airdrop, staking, validator]
+
+news:
+  # 16 feeds answered 200 in ops/crypto_probe.py on 2026-11-09; CryptoPanic needs a key (403) and was
+  # excluded. Freshness measured: CoinDesk 8.7 min, Bitcoinist 9.3, CryptoSlate 18.0, The Block 23.8,
+  # U.Today 26.7, the rest 28 min - 2.8 h.
+  feeds:
+    coindesk: https://www.coindesk.com/arc/outboundfeeds/rss/
+    bitcoinist: https://bitcoinist.com/feed/
+    cryptoslate: https://cryptoslate.com/feed/
+    theblock: https://www.theblock.co/rss.xml
+    utoday: https://u.today/rss
+    ambcrypto: https://ambcrypto.com/feed/
+    bitcoinmagazine: https://bitcoinmagazine.com/feed
+    newsbtc: https://newsbtc.com/feed/
+    thedefiant: https://thedefiant.io/api/feed
+    coingape: https://coingape.com/feed/
+    cryptopotato: https://cryptopotato.com/feed/
+    cointelegraph: https://cointelegraph.com/rss
+    decrypt: https://decrypt.co/feed
+    beincrypto: https://beincrypto.com/feed/
+    protos: https://protos.com/feed/
+    blockworks: https://blockworks.co/feed
+  poll_seconds: 30
+  request_timeout_seconds: 20
+  user_agent: "spp-crypto-recorder/0.1 (+research; contact: repo owner)"
+  dedupe_minutes: 60
+
+archive:
+  # GDELT DOC 2.0: 250 records per request, 429 under sustained load (measured: the first request of
+  # a session was refused). Two-hour windows keep a window under the record cap; the crawl is
+  # therefore a stratified sample of days, not a full history.
+  endpoint: https://api.gdeltproject.org/api/v2/doc/doc
+  window_hours: 2
+  max_records: 250
+  sample_every_days: 1
+  max_retries: 5
+  backoff_seconds: [15, 30, 60, 120, 300]
+  query_terms: [bitcoin, ethereum, solana, binance, xrp, dogecoin, avalanche, chainlink, cardano,
+                toncoin, arbitrum, optimism]
+
+# Cost model. A round trip is 2 x (taker + slippage); funding is charged separately per 8 h.
+costs:
+  perp_taker_bps: 5.0
+  spot_taker_bps: 10.0
+  slippage_bps: 2.0
+  funding_bps_8h: 1.0
+  round_trip_perp_bps: 14.0
+  round_trip_spot_bps: 24.0
+
+labels:
+  horizons_minutes: [5, 15, 60]
+  # Entry is the open of the first minute whose start is >= first_seen_at + news_lag.
+  news_lag_minutes: 1
+  excess_vs: BTCUSDT
+  dead_zone: 0.05
+  min_quote_volume_usdt: 1000000
+
+splits:
+  train_end: "2025-12-31"
+  val_end: "2026-09-14"
+  holdout_start: "2026-09-15"
+  holdout_end: "2026-11-08"
+  embargo_minutes: 60
+  folds: 6
+
+policy:
+  kelly_fraction: 0.25
+  leverage_caps: [1, 2, 3, 5]
+  maintenance_margin: 0.005
+  max_daily_drawdown: 0.20

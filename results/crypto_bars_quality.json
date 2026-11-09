@@ -1,0 +1,143 @@
+{
+  "generated_at": "2026-11-09T18:07:24+00:00",
+  "window": {
+    "start": "2023-01",
+    "end": "2026-11"
+  },
+  "refresh": false,
+  "symbols": {
+    "BTCUSDT": {
+      "symbol": "BTCUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 3.5715703004087465e-05,
+      "non_positive_prices": 0
+    },
+    "ETHUSDT": {
+      "symbol": "ETHUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 3.5715703004087465e-05,
+      "non_positive_prices": 0
+    },
+    "SOLUSDT": {
+      "symbol": "SOLUSDT",
+      "rows": 2015919,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.00011706819569635486,
+      "non_positive_prices": 0
+    },
+    "BNBUSDT": {
+      "symbol": "BNBUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 3.5715703004087465e-05,
+      "non_positive_prices": 0
+    },
+    "XRPUSDT": {
+      "symbol": "XRPUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 3.5715703004087465e-05,
+      "non_positive_prices": 0
+    },
+    "DOGEUSDT": {
+      "symbol": "DOGEUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 9.524187467756657e-05,
+      "non_positive_prices": 0
+    },
+    "AVAXUSDT": {
+      "symbol": "AVAXUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.005707071709194809,
+      "non_positive_prices": 0
+    },
+    "LINKUSDT": {
+      "symbol": "LINKUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.0027744156514147387,
+      "non_positive_prices": 0
+    },
+    "ADAUSDT": {
+      "symbol": "ADAUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.0008849557522123894,
+      "non_positive_prices": 0
+    },
+    "TONUSDT": {
+      "symbol": "TONUSDT",
+      "rows": 994620,
+      "first": "2024-08-08T10:00:00+00:00",
+      "last": "2026-06-30T02:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 0,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.0007771812350445397,
+      "non_positive_prices": 0
+    },
+    "ARBUSDT": {
+      "symbol": "ARBUSDT",
+      "rows": 1898380,
+      "first": "2023-03-23T15:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.010358305502586415,
+      "non_positive_prices": 0
+    },
+    "OPUSDT": {
+      "symbol": "OPUSDT",
+      "rows": 2015920,
+      "first": "2023-01-01T00:00:00+00:00",
+      "last": "2026-10-31T23:59:00+00:00",
+      "duplicate_ts": 0,
+      "gaps_over_2min": 1,
+      "ohlc_violations": 0,
+      "zero_volume_share": 0.023966228818603913,
+      "non_positive_prices": 0
+    }
+  },
+  "errors": {}
+}
