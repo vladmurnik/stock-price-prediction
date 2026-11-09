@@ -1,0 +1,66 @@
+# Frozen before the first crypto event was scored.
+#
+# Changing any value below after seeing a result turns the experiment into a search for a
+# configuration that happens to fit. If a change is genuinely needed, add a new file
+# (crypto_v2.yaml) and report both runs side by side.
+version: 1
+frozen_on: "2026-11-09"
+
+venue: binance
+market: spot # futures are a labelled variant, never mixed into the spot numbers
+quote: USDT
+
+# Majors plus two high-volatility names: the cost-to-volatility ratio decides what is tradeable.
+symbols:
+  - BTCUSDT
+  - ETHUSDT
+  - SOLUSDT
+  - BNBUSDT
+  - XRPUSDT
+  - DOGEUSDT
+  - AVAXUSDT
+  - LINKUSDT
+
+bar_minutes: 1
+benchmark: BTCUSDT
+
+# Measured, not assumed: the freshest item across eight public feeds was 3.0 minutes old at the
+# moment of the request (results/crypto_probe.json). A feed can always be slower.
+news_lag_minutes: 3
+news_poll_seconds: 30
+
+horizons_minutes: [5, 15, 60]
+
+# Round trip = 2 x taker. Slippage is charged once, in the direction of the trade.
+costs:
+  spot_taker_bps: 10.0 # 0.10 % Binance spot taker, or 7.5 bps with BNB
+  perp_taker_bps: 5.0 # 0.05 % USDT-M futures taker
+  funding_bps_per_8h: 1.0
+  slippage_bps: 2.0
+
+# The daily branch showed that 40 % of headlines carry |p_pos - p_neg| < 0.05 while the sign still
+# sets a full position. A dead zone is the cheapest fix and must be pre-registered.
+direction:
+  source: finbert
+  dead_zone: 0.05
+
+events:
+  dedupe_minutes: 60
+  require_liquid: true
+  min_quote_volume_usdt: 1000000
+
+evaluation:
+  cluster: day # one day = one cluster; crypto trades 24/7 but news arrives in bursts
+  min_events_per_date: 5
+  alpha: 0.05
+  power: 0.8
+
+# A number below this is not a result, whatever its t-statistic: it cannot pay for two taker fees
+# and three to five minutes of latency.
+kill_criteria:
+  min_gross_edge_bps: 20
+  min_events: 2000
+  reason: >-
+    10 bps round trip on perpetuals plus 2 bps slippage and a 3-5 minute delay means a gross edge
+    under 20 bps is indistinguishable from noise after costs. Below 2000 events the MDE stays above
+    the fee, so a null cannot be told apart from a small edge.

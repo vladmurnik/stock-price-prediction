@@ -208,6 +208,27 @@ numbers and the plan: `docs/data-intraday-supply.md`. Audits:
 `docs/audits/R16-intraday-lookahead.md`, `docs/audits/G7-intraday-validation.md`,
 `docs/audits/S1-sentiment-classification.md`.
 
+## Crypto branch: where latency, not data, is the constraint
+
+Equities failed on supply: no overlap between news and minute bars. Crypto removes that blocker —
+Binance serves 1-minute bars back to 2017 without a key, and sixteen public RSS feeds publish within
+minutes. The branch is pre-registered in `configs/crypto.yaml` before any event was scored.
+
+The first measurement is not encouraging for "react before the crowd". Over 90 days, entering at the
+open of the next bar after a top-0.2 % one-minute move leaves **no continuation**: +0.6 bps on BTC
+(t +0.24), −4.0 bps on SOL (t −0.78), and at one hour SOL and DOGE *revert* by 19–24 bps (t ≈ −1.9)
+instead of continuing. A round trip costs 12 bps on perpetuals and 20 bps on spot, so the measured
+effect does not pay for the fees. Leverage does not change the sign: fees are charged on notional, so
+edge and cost scale together.
+
+Being early is physically possible only where the time is known in advance — exchange listings, token
+unlocks, ETF decisions, macro prints. Everything else reaches a public feed 1–3 minutes after
+publication, which is after the first bar.
+
+Full design, the measured channel table and the frozen kill criteria: `docs/crypto-design.md`.
+Chronology of the whole project: `docs/history.md`. Raw numbers: `results/crypto_shock.json`,
+`results/crypto_probe.json`.
+
 ## Limitations
 
 * A3 (open-jev) does not beat FinBERT: 0.0112 against 0.0134, and both intervals contain zero. What
