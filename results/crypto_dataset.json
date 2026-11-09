@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-11-09T21:14:55+00:00",
+  "news_files": [
+    "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\news\\wayback.parquet",
+    "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\news\\recorder.parquet"
+  ],
+  "news_unmatched": [],
+  "news_rows": 33116,
+  "window": {
+    "since": null,
+    "until": null
+  },
+  "bars_dir": "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\bars\\1m",
+  "bars_loaded": [
+    "ADAUSDT",
+    "ARBUSDT",
+    "AVAXUSDT",
+    "BNBUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "OPUSDT",
+    "SOLUSDT",
+    "TONUSDT",
+    "XRPUSDT"
+  ],
+  "funnel": {
+    "total_pairs": 16334,
+    "kept": 6584,
+    "duplicate": 0,
+    "na_published_at": 0,
+    "no_symbol": 0,
+    "benchmark_asset": 9691,
+    "no_bar_at_or_after": 59,
+    "missing_exit_5m": 1,
+    "missing_exit_15m": 1,
+    "missing_exit_60m": 1
+  },
+  "checks": {
+    "entry_not_before_news_lag": true,
+    "entry_not_before_news_lag_count": 0,
+    "bench_same_window": true,
+    "bench_same_window_count": 0,
+    "no_bar_earlier_than_entry": true,
+    "no_bar_earlier_than_entry_count": 0,
+    "split_boundaries_disjoint": true,
+    "split_boundaries_disjoint_count": 0,
+    "no_duplicate_url_symbol": true,
+    "no_duplicate_url_symbol_count": 0,
+    "entry_price_matches_bar": true,
+    "entry_price_matches_bar_count": 0,
+    "realised_lag_consistent": true,
+    "realised_lag_consistent_count": 0
+  },
+  "splits": {
+    "train": 4715,
+    "val": 1657,
+    "holdout": 210,
+    "embargo": 2
+  },
+  "horizons": {
+    "5m": {
+      "n": 6583,
+      "mean_excess_bps": 0.5990637274130679
+    },
+    "15m": {
+      "n": 6583,
+      "mean_excess_bps": 0.7912729491726561
+    },
+    "60m": {
+      "n": 6583,
+      "mean_excess_bps": 1.2417660614753538
+    }
+  },
+  "rows": 6584,
+  "out": "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\dataset\\events.parquet"
+}

@@ -7,15 +7,18 @@ built around three ideas:
 
 * :func:`fetch_window` retries 429/5xx/timeouts with the configured backoff and never raises
   on a bad body — a run that gives up loudly is worth more than one that dies quietly.
-* :func:`crawl` records every completed ``asset|window`` task in a JSON state file and rewrites
-  it after each window, so a kill (or a Ctrl-C during a backoff sleep) never loses progress.
+* :func:`crawl` records every successfully fetched ``asset|window`` task in a JSON state file
+  and rewrites it after each window, so a kill (or a Ctrl-C during a backoff sleep) never loses
+  progress. A window whose fetch failed stays *pending*: a later resume retries it instead of
+  silently skipping a hole a rate limit carved into the archive.
 * Saturation (``len(raw) >= max_records``) halves that asset's window exactly once, because a
   250-record ``datedesc`` page is a truncated sample of a busy two-hour slice.
 
 Counter semantics: ``requests`` counts :func:`fetch_window` calls (internal retry attempts are
 not counted), ``failed`` counts calls that returned zero rows — with the frozen
 ``(rows, saturated)`` return shape a rate-limited window and a genuinely empty window are
-indistinguishable, and for these query terms an empty two-hour slice is rare. ``saturated``
+indistinguishable, and for these query terms an empty two-hour slice is rare — either way the
+window stays pending in the state file and a resume retries it. ``saturated``
 counts calls that hit the record cap.
 """
 
@@ -417,14 +420,17 @@ def crawl(
 ) -> dict[str, Any]:
     """Walk windows x assets, append new rows to ``out_path``, checkpoint ``state_path``.
 
-    Tasks recorded in the state file are skipped (resume), each completed task is marked
-    ``asset|window_start_iso``, and the state is rewritten after every window — and again on a
-    budget stop — so a kill never loses progress. Rows are appended to the parquet store
-    *before* the state that marks their window done: a crash in between costs a refetch, which
-    dedupe absorbs, never a lost article. A saturated window is halved for that asset exactly
-    once. Stops as soon as either budget (``max_requests`` fetch calls, ``max_minutes`` wall
-    time) is exhausted. Returns ``requests, failed, saturated, kept, windows_done, seconds``
-    for *this run*; the state file holds the cumulative counters.
+    Tasks recorded in the state file are skipped (resume), and a task is recorded only when its
+    fetch returned rows — a rate-limited window stays pending for the next run. Each recorded
+    task is marked ``asset|window_start_iso`` and the state is rewritten after every window —
+    and again on a budget stop — so a kill never loses progress. Rows are appended to the
+    parquet store *before* the state that marks their window done: a crash in between costs a
+    refetch, which dedupe absorbs, never a lost article. A saturated window is halved for that
+    asset exactly once. Stops as soon as either budget (``max_requests`` fetch calls,
+    ``max_minutes`` wall time) is exhausted. Returns
+    ``requests, failed, saturated, kept, windows_done, seconds`` for *this run*, where
+    ``windows_done`` counts windows whose asset tasks are all recorded; the state file holds
+    the cumulative counters.
     """
     unknown = [asset for asset in assets if asset not in config.terms]
     if unknown:
@@ -460,15 +466,16 @@ def crawl(
             query = config.terms[asset]
             rows, saturated = fetch_window(config, query, window_start, window_end, get=get)
             run["requests"] += 1
-            if not rows:
+            if rows:
+                window_rows.extend({**row, "asset": asset} for row in rows)
+                # Recorded only on a non-empty result: a rate-limited or empty window stays
+                # pending, so a later resume retries it instead of skipping it forever.
+                done.add(key)
+            else:
                 run["failed"] += 1
             if saturated:
                 run["saturated"] += 1
-            window_rows.extend({**row, "asset": asset} for row in rows)
-            # The main fetch completed, so the task is recorded even if a budget stop skips
-            # the halving pass below (dedupe makes the resumed run cheap either way).
-            done.add(key)
-            if saturated:
+            if saturated and rows:
                 midpoint = window_start + (window_end - window_start) / 2
                 for half_start, half_end in (
                     (window_start, midpoint),
@@ -494,7 +501,9 @@ def crawl(
         if window_rows:
             kept += _append_rows(out_path, window_rows)
         _checkpoint()
-        if not budget_hit:
+        # A window counts as done only when every asset task is recorded (this run or a prior
+        # one); a failed fetch leaves its key pending and the window uncounted.
+        if all(_state_key(asset, window_start) in done for asset in assets):
             windows_done += 1
         if budget_hit:
             break

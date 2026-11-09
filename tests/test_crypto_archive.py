@@ -410,6 +410,46 @@ def test_crawl_stops_at_max_requests(tmp_path: Path) -> None:
     assert len(loaded["done"]) == 2
 
 
+def test_crawl_failed_window_stays_pending_and_is_retried(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config = make_config(max_retries=2, backoff_seconds=(0, 0))
+    out = tmp_path / "archive.parquet"
+    state = tmp_path / "state.json"
+    sleeps: list[float] = []
+    monkeypatch.setattr(archive.time, "sleep", sleeps.append)
+
+    def blocked_get(
+        url: str, params: dict | None = None, timeout: float | None = None
+    ) -> _Response:
+        return _Response(429, text="rate limited")
+
+    first = crawl(config, ["bitcoin"], WIN_START, WIN_END, out, state, get=blocked_get)
+    assert first["requests"] == 1
+    assert first["failed"] == 1
+    assert first["windows_done"] == 0
+    # A rate-limited window must NOT be recorded as done, or the hole would never be filled.
+    loaded = json.loads(state.read_text(encoding="utf-8"))
+    assert loaded["done"] == []
+
+    calls: list[str] = []
+
+    def ok_get(url: str, params: dict | None = None, timeout: float | None = None) -> _Response:
+        calls.append(str(params["startdatetime"]))
+        return _Response(
+            200, {"articles": [_article("https://example.com/retry", "20260901T010000Z")]}
+        )
+
+    second = crawl(config, ["bitcoin"], WIN_START, WIN_END, out, state, get=ok_get)
+    assert calls == ["20260901000000"]  # the pending window was retried, not skipped
+    assert second["requests"] == 1
+    assert second["failed"] == 0
+    assert second["kept"] == 1
+    assert second["windows_done"] == 1
+    loaded = json.loads(state.read_text(encoding="utf-8"))
+    assert loaded["done"] == ["bitcoin|2026-09-01T00:00:00+00:00"]
+
+
 # --------------------------------------------------------------------------- #
 # Parquet round trip
 # --------------------------------------------------------------------------- #

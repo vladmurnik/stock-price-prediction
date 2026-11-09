@@ -229,6 +229,12 @@ Full design, the measured channel table and the frozen kill criteria: `docs/cryp
 Chronology of the whole project: `docs/history.md`. Raw numbers: `results/crypto_shock.json`,
 `results/crypto_probe.json`.
 
+**Result.** 6,584 events over 11 assets, five news sources and 33,051 archived headlines: the
+average excess is +0.60 / +0.79 / +1.24 bps at 5 / 15 / 60 minutes against 14 bps round trip, the
+quantile model's out-of-sample IC is −0.005…+0.009 (sd 0.04–0.07), and the trades it does take lose
+money before costs (60 min: −7.61 bps, t −3.00). Full numbers, the two defects found on the way and
+the limits of the sample: [docs/crypto-results.md](docs/crypto-results.md).
+
 ## Limitations
 
 * A3 (open-jev) does not beat FinBERT: 0.0112 against 0.0134, and both intervals contain zero. What
