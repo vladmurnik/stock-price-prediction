@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-11-10T08:03:08+00:00",
+  "generated_at": "2026-11-10T18:26:23+00:00",
   "news_files": [
     "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\news\\wayback.parquet",
     "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\news\\recorder.parquet"
   ],
   "news_unmatched": [],
-  "news_rows": 33386,
+  "news_rows": 86171,
   "window": {
     "since": null,
     "until": null
@@ -26,13 +26,13 @@
     "XRPUSDT"
   ],
   "funnel": {
-    "total_pairs": 16469,
-    "kept": 6626,
+    "total_pairs": 45876,
+    "kept": 21588,
     "duplicate": 0,
     "na_published_at": 0,
     "no_symbol": 0,
-    "benchmark_asset": 9779,
-    "no_bar_at_or_after": 64,
+    "benchmark_asset": 24072,
+    "no_bar_at_or_after": 216,
     "missing_exit_5m": 1,
     "missing_exit_15m": 1,
     "missing_exit_60m": 1
@@ -54,25 +54,25 @@
     "realised_lag_consistent_count": 0
   },
   "splits": {
-    "train": 4740,
-    "val": 1674,
-    "holdout": 210,
-    "embargo": 2
+    "train": 17155,
+    "val": 3964,
+    "holdout": 465,
+    "embargo": 4
   },
   "horizons": {
     "5m": {
-      "n": 6625,
-      "mean_excess_bps": 0.5955655932821602
+      "n": 21587,
+      "mean_excess_bps": 0.09037654020179621
     },
     "15m": {
-      "n": 6625,
-      "mean_excess_bps": 0.8051123939521433
+      "n": 21587,
+      "mean_excess_bps": 0.287913686684136
     },
     "60m": {
-      "n": 6625,
-      "mean_excess_bps": 1.2725437877429004
+      "n": 21587,
+      "mean_excess_bps": 0.8718344967901793
     }
   },
-  "rows": 6626,
+  "rows": 21588,
   "out": "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\dataset\\events.parquet"
 }

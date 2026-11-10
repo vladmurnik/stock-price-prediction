@@ -1,4 +1,4 @@
-"""T7 — train the crypto event-study models and write the policy report.
+﻿"""T7 — train the crypto event-study models and write the policy report.
 
 Usage:
     python ops/crypto_train.py
@@ -200,7 +200,7 @@ def fit_final_models(
 
 # --------------------------------------------------------------------------- tables
 def baseline_table(
-    events: pd.DataFrame, X: pd.DataFrame, val_idx: pd.Index
+    events: pd.DataFrame, X: pd.DataFrame, val_idx: pd.Index, legs: float = 2.0
 ) -> list[dict[str, Any]]:
     """Baselines on the val rows (L = 1), one row per (baseline, horizon)."""
     val = events.loc[val_idx]
@@ -217,7 +217,7 @@ def baseline_table(
                 else None
             )
             pos = baseline_positions(kind, trailing, asset, means)
-            metrics = evaluate_policy(val["entry_ts"], pos, val[f"excess_{h}m"], cost, legs=2.0)
+            metrics = evaluate_policy(val["entry_ts"], pos, val[f"excess_{h}m"], cost, legs=legs)
             rows.append(
                 {
                     "baseline": kind,
@@ -231,7 +231,11 @@ def baseline_table(
 
 
 def policy_table(
-    events: pd.DataFrame, X: pd.DataFrame, val_idx: pd.Index, pred50: dict[int, np.ndarray]
+    events: pd.DataFrame,
+    X: pd.DataFrame,
+    val_idx: pd.Index,
+    pred50: dict[int, np.ndarray],
+    legs: float = 2.0,
 ) -> list[dict[str, Any]]:
     """Policy rows: per horizon and L on the val rows, hurdle = cost (14 bps)."""
     val = events.loc[val_idx]
@@ -242,7 +246,7 @@ def policy_table(
         excess = val[f"excess_{h}m"].to_numpy(dtype="float64")
         for leverage in LEVERAGES:
             pos = policy_positions(pred50[h], hurdle, leverage)
-            metrics = evaluate_policy(val["entry_ts"], pos, excess, cost, legs=2.0)
+            metrics = evaluate_policy(val["entry_ts"], pos, excess, cost, legs=legs)
             rows.append({"horizon": f"{h}m", "L": leverage, "hurdle_bps": hurdle * 1e4, **metrics})
     return rows
 
@@ -252,6 +256,7 @@ def per_asset_table(
     X: pd.DataFrame,
     val_idx: pd.Index,
     pred50: dict[int, np.ndarray],
+    legs: float = 2.0,
 ) -> list[dict[str, Any]]:
     """Net PnL per asset for every (horizon, L) of the policy on the val rows."""
     val = events.loc[val_idx]
@@ -264,7 +269,8 @@ def per_asset_table(
         for leverage in LEVERAGES:
             pos = policy_positions(pred50[h], hurdle, leverage)
             valid = np.isfinite(pos) & np.isfinite(excess)
-            net = policy_net_pnl(pos, excess, cost, legs=2.0)  # the label is a spread: two legs pay
+            # the label is a spread: two legs pay
+            net = policy_net_pnl(pos, excess, cost, legs=legs)
             frame = pd.DataFrame(
                 {
                     "symbol": symbols[valid],
@@ -502,6 +508,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--md", default=str(DEFAULT_MD))
     parser.add_argument("--folds", type=int, default=5)
     parser.add_argument("--embargo-minutes", type=int, default=60)
+    parser.add_argument(
+        "--legs",
+        type=float,
+        default=2.0,
+        help="round trips per event: 2 for an excess label (a spread), 1 for an absolute return",
+    )
     args = parser.parse_args(argv)
 
     events = read_events(Path(args.events))
@@ -527,9 +539,9 @@ def main(argv: list[str] | None = None) -> int:
         h: np.asarray(fitted[(h, 0.5)].predict(X.loc[val_idx]), dtype="float64")
         for h in HORIZONS
     }
-    baseline_rows = baseline_table(events, X, val_idx)
-    policy_rows = policy_table(events, X, val_idx, pred50)
-    asset_rows = per_asset_table(events, X, val_idx, pred50)
+    baseline_rows = baseline_table(events, X, val_idx, legs=args.legs)
+    policy_rows = policy_table(events, X, val_idx, pred50, legs=args.legs)
+    asset_rows = per_asset_table(events, X, val_idx, pred50, legs=args.legs)
 
     hurdle_bps = float(np.nanmedian(events.loc[val_idx, "cost"])) * 1e4
     positive = [

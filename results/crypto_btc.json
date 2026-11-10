@@ -1,0 +1,157 @@
+{
+  "generated_at": "2026-11-10T18:24:43+00:00",
+  "meta": {
+    "n_events": 24037,
+    "first": "2023-01-01 09:40:33+00:00",
+    "last": "2026-10-30 02:22:31+00:00",
+    "sources": {
+      "coindesk": 5681,
+      "cointelegraph": 5085,
+      "cryptopotato": 2813,
+      "coingape": 2561,
+      "cryptoslate": 2045,
+      "newsbtc": 1347,
+      "bitcoinist": 1217,
+      "thedefiant": 1045,
+      "theblock": 975,
+      "ambcrypto": 952,
+      "bitcoinmagazine": 304,
+      "utoday": 12
+    },
+    "cost_bps": 14.0,
+    "symbol": "BTCUSDT"
+  },
+  "funnel": {
+    "total_pairs": 45876,
+    "kept": 45625,
+    "duplicate": 0,
+    "na_published_at": 0,
+    "no_symbol": 0,
+    "benchmark_asset": 0,
+    "no_bar_at_or_after": 251,
+    "missing_exit_5m": 1,
+    "missing_exit_15m": 2,
+    "missing_exit_60m": 2
+  },
+  "event_study": [
+    {
+      "horizon": "5m",
+      "n": 24037,
+      "mean_bps": 0.21140789867869697,
+      "median_bps": 0.0424501615814421,
+      "mean_abs_bps": 11.047115335990858,
+      "share_up": 0.5027249656779132,
+      "ci95_title_bps": 0.2251291828536096,
+      "title_clusters": 23928,
+      "ci95_day_bps": 0.2579554649618135,
+      "day_clusters": 1312,
+      "mde80_bps": 0.368771026950511,
+      "net_long_bps": -13.788592101321303,
+      "net_short_bps": -14.211407898678697
+    },
+    {
+      "horizon": "15m",
+      "n": 24036,
+      "mean_bps": 0.07901026275045847,
+      "median_bps": -0.003728444724626634,
+      "mean_abs_bps": 18.73751352577817,
+      "share_up": 0.49908470627392243,
+      "ci95_title_bps": 0.3736770075336556,
+      "title_clusters": 23927,
+      "ci95_day_bps": 0.5004428248591654,
+      "day_clusters": 1312,
+      "mde80_bps": 0.7154289771711129,
+      "net_long_bps": -13.920989737249542,
+      "net_short_bps": -14.079010262750458
+    },
+    {
+      "horizon": "60m",
+      "n": 24036,
+      "mean_bps": -0.40965216437376856,
+      "median_bps": 0.04136768427809301,
+      "mean_abs_bps": 37.01596579928807,
+      "share_up": 0.5008736894658014,
+      "ci95_title_bps": 0.7401473463229485,
+      "title_clusters": 23927,
+      "ci95_day_bps": 1.3515471150175384,
+      "day_clusters": 1312,
+      "mde80_bps": 1.9321607225913993,
+      "net_long_bps": -14.40965216437377,
+      "net_short_bps": -13.59034783562623
+    }
+  ],
+  "by_prior_move": [
+    {
+      "horizon": "5m",
+      "group": "prior up",
+      "n": 12101,
+      "mean_bps": 0.07448768167647658,
+      "share_up": 0.4916122634493017,
+      "net_long_bps": -13.925512318323523,
+      "net_short_bps": -14.074487681676477
+    },
+    {
+      "horizon": "5m",
+      "group": "prior down",
+      "n": 11887,
+      "mean_bps": 0.3474429043485238,
+      "share_up": 0.5140910238075208,
+      "net_long_bps": -13.652557095651476,
+      "net_short_bps": -14.347442904348524
+    },
+    {
+      "horizon": "15m",
+      "group": "prior up",
+      "n": 12101,
+      "mean_bps": -0.3790385624653506,
+      "share_up": 0.4826873812081646,
+      "net_long_bps": -14.37903856246535,
+      "net_short_bps": -13.62096143753465
+    },
+    {
+      "horizon": "15m",
+      "group": "prior down",
+      "n": 11887,
+      "mean_bps": 0.5416497151157841,
+      "share_up": 0.5156894085976277,
+      "net_long_bps": -13.458350284884215,
+      "net_short_bps": -14.541649715115785
+    },
+    {
+      "horizon": "60m",
+      "group": "prior up",
+      "n": 12101,
+      "mean_bps": -0.39102509129212276,
+      "share_up": 0.4917775390463598,
+      "net_long_bps": -14.391025091292123,
+      "net_short_bps": -13.608974908707877
+    },
+    {
+      "horizon": "60m",
+      "group": "prior down",
+      "n": 11887,
+      "mean_bps": -0.42484336174601584,
+      "share_up": 0.5103895011356945,
+      "net_long_bps": -14.424843361746015,
+      "net_short_bps": -13.575156638253985
+    }
+  ],
+  "features": [
+    "hour_sin",
+    "hour_cos",
+    "dow",
+    "asset_code",
+    "log_lag",
+    "tr_ret_5m",
+    "tr_ret_15m",
+    "tr_ret_60m",
+    "tr_vol_30m",
+    "tr_vol_60m",
+    "btc_ret_5m",
+    "btc_ret_15m",
+    "btc_ret_60m",
+    "btc_vol_30m",
+    "news_burst_60m"
+  ],
+  "out": "C:\\Users\\adik\\Desktop\\progects\\stock-price-prediction\\data\\crypto\\dataset\\events_btc.parquet"
+}
