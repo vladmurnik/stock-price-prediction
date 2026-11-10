@@ -448,3 +448,14 @@ def test_empty_input_is_handled() -> None:
     assert m["max_drawdown_bps"] == 0.0
     with pytest.raises(ValueError):
         models.make_walk_forward_folds(empty)
+
+
+# --------------------------------------------------------------------------- legs
+def test_evaluate_policy_charges_every_leg_of_a_spread() -> None:
+    """``excess = ret - bench`` is a two-leg position, so ``legs=2`` costs one more round trip."""
+    entry = pd.to_datetime(["2024-01-01T00:00:00Z", "2024-01-02T00:00:00Z"])
+    pos = np.array([1.0, -1.0])
+    exc = np.full(2, 0.01)
+    one = models.evaluate_policy(entry, pos, exc, 0.0014, legs=1.0)
+    two = models.evaluate_policy(entry, pos, exc, 0.0014, legs=2.0)
+    assert two["net_bps_per_trade"] == pytest.approx(one["net_bps_per_trade"] - 14.0)

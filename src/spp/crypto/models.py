@@ -634,19 +634,26 @@ def policy_positions(pred_q50: Any, hurdle: float, leverage: int | float) -> np.
     return float(leverage) * pos
 
 
-def policy_net_pnl(positions: Any, excess: Any, cost: Any) -> np.ndarray:
-    """Net PnL per event: ``position * excess - |position| * cost``.
+def policy_net_pnl(positions: Any, excess: Any, cost: Any, legs: float = 1.0) -> np.ndarray:
+    """Net PnL per event: ``position * excess - |position| * cost * legs``.
 
-    Equal to ``L * (sign * excess - cost)`` — leverage scales the edge and the fees by
-    the same factor and therefore cannot flip the sign of the expectancy.
+    Equal to ``L * (sign * excess - cost * legs)`` — leverage scales the edge and the
+    fees by the same factor and therefore cannot flip the sign of the expectancy.
+
+    ``legs`` is the number of cost-paying legs of the traded position. It is 1 for a
+    single instrument, and **2 when the label is an excess return**: ``excess = ret -
+    bench`` can only be earned by holding the asset and shorting the benchmark, which
+    pays a round trip twice. Passing 1 there understates the fees by exactly one leg.
     """
     pos = np.asarray(positions, dtype="float64")
     exc = np.asarray(excess, dtype="float64")
-    fees = np.broadcast_to(np.asarray(cost, dtype="float64"), pos.shape)
+    fees = np.broadcast_to(np.asarray(cost, dtype="float64") * float(legs), pos.shape)
     return pos * exc - np.abs(pos) * fees
 
 
-def evaluate_policy(entry_ts: Any, positions: Any, excess: Any, cost: Any) -> dict[str, Any]:
+def evaluate_policy(
+    entry_ts: Any, positions: Any, excess: Any, cost: Any, legs: float = 1.0
+) -> dict[str, Any]:
     """Policy metrics on one horizon: trade counts, bps, day-clustered t, Sharpe, DD.
 
     ``gross_bps`` is per *traded* event (1e4 * mean(sign * excess)); ``net_bps`` is
@@ -679,7 +686,7 @@ def evaluate_policy(entry_ts: Any, positions: Any, excess: Any, cost: Any) -> di
     entries = pd.DatetimeIndex(pd.to_datetime(entry_ts, utc=True))[valid]
     traded = pos != 0.0
     n_trades = int(np.count_nonzero(traded))
-    net = policy_net_pnl(pos, exc, fees)
+    net = policy_net_pnl(pos, exc, fees, legs=legs)
     daily = daily_pnl(entries, net)
     return {
         "n_eval": n,

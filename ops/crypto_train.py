@@ -217,7 +217,7 @@ def baseline_table(
                 else None
             )
             pos = baseline_positions(kind, trailing, asset, means)
-            metrics = evaluate_policy(val["entry_ts"], pos, val[f"excess_{h}m"], cost)
+            metrics = evaluate_policy(val["entry_ts"], pos, val[f"excess_{h}m"], cost, legs=2.0)
             rows.append(
                 {
                     "baseline": kind,
@@ -242,7 +242,7 @@ def policy_table(
         excess = val[f"excess_{h}m"].to_numpy(dtype="float64")
         for leverage in LEVERAGES:
             pos = policy_positions(pred50[h], hurdle, leverage)
-            metrics = evaluate_policy(val["entry_ts"], pos, excess, cost)
+            metrics = evaluate_policy(val["entry_ts"], pos, excess, cost, legs=2.0)
             rows.append({"horizon": f"{h}m", "L": leverage, "hurdle_bps": hurdle * 1e4, **metrics})
     return rows
 
@@ -264,7 +264,7 @@ def per_asset_table(
         for leverage in LEVERAGES:
             pos = policy_positions(pred50[h], hurdle, leverage)
             valid = np.isfinite(pos) & np.isfinite(excess)
-            net = policy_net_pnl(pos, excess, cost)
+            net = policy_net_pnl(pos, excess, cost, legs=2.0)  # the label is a spread: two legs pay
             frame = pd.DataFrame(
                 {
                     "symbol": symbols[valid],

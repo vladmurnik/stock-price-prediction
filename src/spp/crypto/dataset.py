@@ -655,7 +655,11 @@ def build_dataset(
             continue
         dated.append((row, asset, symbol))
 
-    # 3. dedupe on (url, symbol) keeping the first row in published_at order.
+    # 3. dedupe on (url, symbol) keeping the first row in published_at order. A headline
+    # that names several coins legitimately yields one event per symbol - the shock is
+    # cross-sectional - so the dedupe key is the URL, not the title. Repeated titles are
+    # 463 of 6,626 rows, always single-source and multi-symbol; the non-independence that
+    # creates is handled by clustering the inference, not by deleting the events.
     ordered = sorted(dated, key=lambda item: int(pub_ns[item[0]]))
     seen: set[tuple[str, str]] = set()
     unique: list[tuple[int, str, str]] = []

@@ -1,0 +1,68 @@
+[
+  {
+    "horizon": 5,
+    "side": "long",
+    "attempts": 6584,
+    "filled": 5693,
+    "fill_rate": 0.8646719319562576,
+    "mean_adverse_bps": 0.0,
+    "mean_ret_bps": -4.117943670656733,
+    "mean_net_bps": -13.117943670656734,
+    "t_net": -27.30854154602434
+  },
+  {
+    "horizon": 5,
+    "side": "short",
+    "attempts": 6584,
+    "filled": 5622,
+    "fill_rate": 0.8538882138517618,
+    "mean_adverse_bps": 0.0,
+    "mean_ret_bps": -5.646744765861499,
+    "mean_net_bps": -14.646744765861499,
+    "t_net": -25.00056274113667
+  },
+  {
+    "horizon": 15,
+    "side": "long",
+    "attempts": 6584,
+    "filled": 5693,
+    "fill_rate": 0.8646719319562576,
+    "mean_adverse_bps": 0.0,
+    "mean_ret_bps": -4.609724894793709,
+    "mean_net_bps": -13.609724894793706,
+    "t_net": -16.253466141714238
+  },
+  {
+    "horizon": 15,
+    "side": "short",
+    "attempts": 6584,
+    "filled": 5622,
+    "fill_rate": 0.8538882138517618,
+    "mean_adverse_bps": 0.0,
+    "mean_ret_bps": -4.397521251137545,
+    "mean_net_bps": -13.397521251137542,
+    "t_net": -15.709650306969811
+  },
+  {
+    "horizon": 60,
+    "side": "long",
+    "attempts": 6584,
+    "filled": 5693,
+    "fill_rate": 0.8646719319562576,
+    "mean_adverse_bps": 0.0,
+    "mean_ret_bps": -3.4874597558982887,
+    "mean_net_bps": -12.487459755898287,
+    "t_net": -7.645255810586734
+  },
+  {
+    "horizon": 60,
+    "side": "short",
+    "attempts": 6584,
+    "filled": 5622,
+    "fill_rate": 0.8538882138517618,
+    "mean_adverse_bps": 0.0,
+    "mean_ret_bps": -5.37111971571845,
+    "mean_net_bps": -14.371119715718448,
+    "t_net": -8.419053437287399
+  }
+]
