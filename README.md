@@ -236,6 +236,15 @@ label is a spread, so both legs pay), the quantile model's out-of-sample IC is +
 Full numbers, the three defects found on the way and the limits of the sample:
 [docs/crypto-results.md](docs/crypto-results.md).
 
+**Where the amplitude has a known timestamp.** Macro prints are the one family whose release time is
+published months ahead: 528 releases (CPI and payrolls back to 2008, FOMC to 2017) against 1-minute
+BTC/ETH bars from 2017-08. CPI moves |return| by 74.5 bps over the next hour against 51.1 bps in the
+same hour on a normal day (1.46×; FOMC 2.11×). Trading with the release-minute candle one minute later
+earns **+28.65 bps over 60 minutes on BTC (t +2.66, net +14.65 after 14 bps)** and **+35.32 bps on ETH
+(t +2.48, net +21.32)** — the first positive net cell in the project, and the first one confirmed on two
+instruments. It is a candidate, not a strategy: 36 cells were tested (Bonferroni needs |t| ≈ 3.2), the
+effect lives in 2021–2023, and a 15-minute entry delay takes it below cost.
+
 **Where the amplitude is.** Structural events on the majors do not have it: mean |return| over an hour
 is 30–62 bps against 46 bps for an ordinary commentary piece, and the only directional effect that
 reaches the cost line is shorting insolvency (+12.40 bps, t +2.14, net −1.60 at 14 bps). The amplitude
