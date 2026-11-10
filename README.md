@@ -236,6 +236,16 @@ label is a spread, so both legs pay), the quantile model's out-of-sample IC is +
 Full numbers, the three defects found on the way and the limits of the sample:
 [docs/crypto-results.md](docs/crypto-results.md).
 
+**Where the amplitude is.** Structural events on the majors do not have it: mean |return| over an hour
+is 30–62 bps against 46 bps for an ordinary commentary piece, and the only directional effect that
+reaches the cost line is shorting insolvency (+12.40 bps, t +2.14, net −1.60 at 14 bps). The amplitude
+lives in exchange listings, and it is measured there: across 714 spot listings, buying from the second
+minute loses **2.65 % in an hour** (t −3.56) and **5.44 % in a day** (t −4.63), because the opening
+auction (median +18.14 %) has already absorbed the move. The mirror trade — shorting spot — is
+unavailable, and shorting the perpetual across 923 listings gives a +1.50 % median against a −0.65 %
+mean: p99 adverse move +51.3 %, and 9.3 % of events would liquidate a 5x short within the first hour.
+Full tables: §11–12 of `docs/crypto-results.md`.
+
 ## Limitations
 
 * A3 (open-jev) does not beat FinBERT: 0.0112 against 0.0134, and both intervals contain zero. What
