@@ -282,5 +282,8 @@ results/             every artifact quoted above (json/md only)
 ops/                 experiment scripts, dispatcher, ablation builder
 ```
 
-Data and trained artifacts are not committed (see `.gitignore`); they are reproducible from the
-commands above.
+Raw data and trained artifacts are not committed (see `.gitignore`); they are reproducible from the
+commands above. Derived datasets (events, listings, structural) are committed under `data/crypto/`.
+The full write-up of every idea, its numbers and why each one ended the way it did is in
+**[docs/research/crypto-news-alpha.md](docs/research/crypto-news-alpha.md)**
+(Russian: [crypto-news-alpha.ru.md](docs/research/crypto-news-alpha.ru.md)).
