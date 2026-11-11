@@ -20,7 +20,7 @@ Column meanings follow `docs/data-dictionary.md` and the module docstrings in
 
 | path | what | how to rebuild |
 |---|---|---|
-| `crypto/bars/1m/{SYMBOL}.parquet` | 12 majors, one-minute bars, 2023-01…2026-10 | `python ops/crypto_bars.py` |
+| `crypto/bars/1m/{SYMBOL}.parquet` | 12 majors, one-minute bars, 2023-01…2026-10 | `python ops/crypto_build_bars.py` |
 | `crypto/bars/1m_macro/{SYMBOL}.parquet` | BTC/ETH since 2017-08 for the macro branch | `python ops/crypto_macro_bars.py` |
 | `crypto/news/wayback.parquet` | 86 171 archived headlines | `python ops/crypto_wayback.py --start 2023-01-01 --end 2026-11-09` |
 | `crypto/news/recorder.parquet` | live RSS recorder output | `python ops/crypto_news.py --once` |

@@ -4,9 +4,37 @@
 
 **What was tested:** whether public news and macro releases can be traded profitably in crypto at realistic costs and realistic reaction latency.
 
-**Short answer:** on Binance one-minute data from 2023 to 2026 — no. Five of the six idea families lost money after costs; the sixth (CPI releases) produced the first positive cell in the project and remains a candidate, not a strategy. Below is the whole path, every number, and why each branch ended the way it did.
+**Short answer:** on Binance one-minute data from 2023 to 2026 — no. Eleven of the twelve tested ideas lost money after costs; the twelfth (CPI releases) produced the first positive cell in the project and remains a candidate, not a strategy. Below is the whole path, every number, and why each branch ended the way it did.
 
-**Scope:** 86,171 headlines from 11 sources, 21,588 cross-sectional events, 24,037 BTC events, 45,625 structural events, 714 spot listings, 923 perpetual listings, 528 macro releases. About 120,000 measured events, 422 automated tests, 78 independent number checks.
+**Scope:** 86,171 headlines from 11 sources, forming 45,625 (headline, symbol) pairs — 21,588 in the cross-section and 24,037 on BTC — plus 714 spot listings, 923 perpetual listings, 528 macro releases and 1,040 minute-level shocks. That is 47,790 measured events, 422 automated tests and 78 independent number checks.
+
+## Contents
+
+1. [Problem statement](#1-problem-statement)
+2. [Data](#2-data)
+3. [Method](#3-method)
+4. [Map of ideas and verdicts](#4-map-of-ideas-and-verdicts)
+5. [The ideas in detail: design, result, reason](#5-the-ideas-in-detail-design-result-reason)
+   - [5.1. Cross-sectional news](#51-cross-sectional-news)
+   - [5.2. BTC absolute return](#52-btc-absolute-return)
+   - [5.3. A more complex model: the capacity ladder](#53-a-more-complex-model-the-capacity-ladder)
+   - [5.4. Classic market models](#54-classic-market-models)
+   - [5.5. Maker execution](#55-maker-execution)
+   - [5.6. Structural events](#56-structural-events)
+   - [5.7. Spot listings](#57-spot-listings)
+   - [5.8. Perpetual listings](#58-perpetual-listings)
+   - [5.9. Macro releases](#59-macro-releases)
+   - [5.10. Daily and intraday equity branches](#510-daily-and-intraday-equity-branches)
+   - [5.11. Source trust](#511-source-trust)
+   - [5.12. Post-shock continuation](#512-post-shock-continuation)
+6. [Four barriers: why everything ended the same way](#6-four-barriers-why-everything-ended-the-same-way)
+7. [Defects found along the way](#7-defects-found-along-the-way)
+8. [What is independently confirmed](#8-what-is-independently-confirmed)
+9. [Limitations](#9-limitations)
+10. [What would change the conclusion](#10-what-would-change-the-conclusion)
+11. [Reproduction](#11-reproduction)
+12. [Conclusion](#12-conclusion)
+
 
 ---
 
@@ -103,6 +131,8 @@ An `excess` label is a spread, so it pays **two** legs — 28 bps per round trip
 | 8 | perpetual listings | a short catches the post-listing reversal | **failed**: negative mean, the tail eats the median |
 | 9 | macro releases CPI/FOMC/NFP | time is known in advance and amplitude is larger | **candidate**: CPI 60 min +28.9 bps, t +2.66 |
 | 10 | daily and intraday equity branches | transfer the method to stocks | **failed**: IC 0.0127 unconfirmed; intraday not measurable |
+| 11 | source trust | some publishers carry a stronger signal and can be weighted | **failed**: the ranking does not replicate, Spearman −0.03…+0.15 |
+| 12 | post-shock continuation | a violent move continues | **failed**: the sign flips across instruments, |t| ≤ 1.93, best cell +9.37 bps < 14 |
 
 ---
 
@@ -286,6 +316,55 @@ Risk: median maximum rise in the first hour +3.37%, p90 +19.15%, **p99 +51.33%**
 
 The method was first built on equities. The daily branch: 2023 holdout, IC 0.0127, confidence interval [−0.0102, 0.0356], verdict `not_confirmed`, net Sharpe −6.75. The intraday branch: 59 events over 6 sessions, effect +2.67 bps against an MDE of 18–22 bps — **not measurable** with the available data, so it was published as "not measured", not as "does not work".
 
+### 5.11. Source trust
+
+**Idea.** Eleven publishers produce streams of different quality. If some of them carry a stronger
+average reaction, events could be weighted by source — or at least the negative contributors dropped.
+
+**Design.** 21,588 events. A source's `alpha` is its mean return shrunk toward the global mean with
+weight K = 50 events: `alpha = n/(n+K)·mean + K/(n+K)·global`. Stability is tested by splitting the
+corpus in half by time: does the ranking of sources agree between the halves?
+
+**Result.** The best source in sample is CoinDesk: +1.13 bps at 5 minutes (t +2.19), +2.61 bps at
+60 (t +1.64). The worst at 5 minutes is Cointelegraph: −1.07 (t −2.60). Across 11 sources at 60
+minutes the range is −2.94 (cryptoslate) to +2.61 bps — a 5.5 bps spread between best and worst.
+
+**Stability.** Spearman between halves: −0.03 at 5 minutes, +0.10 at 15, +0.15 at 60. The same sign
+is kept by 5 of 9 sources at 5 minutes, 4 of 9 at 15 and 3 of 9 at 60. The ranking in the first half
+does not predict the ranking in the second.
+
+**Why.** The best-to-worst spread is 5.5 bps per hour: five times smaller than the 28 bps cost and
+smaller than the corpus's own half-to-half variation. Even perfect knowledge of the "right" source
+does not turn the branch positive, and the "right" source changes from half to half. This is a more
+general lesson: source trust cannot be measured on the same corpus it is going to be applied to —
+it needs an external, pre-held-out period.
+
+### 5.12. Post-shock continuation
+
+**Idea.** Separately from news: a violent one-minute move may continue. A 2σ bar is not noise but
+the start of a directional move. This hypothesis needs no text, so it does not hit the latency
+barrier — the only branch where latency is irrelevant by construction.
+
+**Design.** The threshold is 2σ of one-minute volatility per instrument: 29.3 bps for BTC, 41.5 for
+ETH, 46.7 for SOL, 55.1 for DOGE. The 260 strongest minutes per instrument (0.2% of time) are taken
+long in the direction of the shock, exiting after 1/5/15/60 minutes, at a cost of one leg — 14 bps.
+
+**Result.** Continuation in bps (t):
+
+| instrument | 1 min | 5 min | 15 min | 60 min |
+|---|---|---|---|---|
+| BTC | −0.56 (−0.36) | +0.64 (+0.24) | +3.65 (+0.98) | +5.39 (+1.02) |
+| ETH | +1.46 (+0.53) | +2.00 (+0.49) | +5.06 (+0.85) | +9.37 (+1.26) |
+| SOL | +1.24 (+0.39) | −4.00 (−0.78) | −1.45 (−0.22) | −18.74 (−1.90) |
+| DOGE | −0.55 (−0.10) | −2.96 (−0.42) | −10.46 (−1.26) | −24.19 (−1.93) |
+
+**Why.** The sign flips from instrument to instrument: BTC and ETH show weak continuation, SOL and
+DOGE weak reversion. Win rates are 0.40–0.49: there is not one instrument where the direction is
+guessed better than a coin. The largest |t| is 1.93, and it is negative. Even the best cell (+9.37
+bps on ETH over an hour) is below the single-leg cost of 14 bps. This is exactly what a market
+should produce when one-minute shocks are mostly liquidity noise: without a text there is no reason
+for the move to continue.
+
 ---
 
 ## 6. Four barriers: why everything ended the same way
@@ -382,7 +461,7 @@ What not to repeat: more model complexity, metamodels, maker execution on alts, 
 
 ```bash
 # bars (12 symbols, 47 months)
-python ops/crypto_bars.py
+python ops/crypto_build_bars.py
 
 # news
 python ops/crypto_wayback.py --start 2023-01-01 --end 2026-11-09

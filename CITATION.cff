@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you reference this study, cite the repository record below."
+title: "News alpha in crypto: a complete study"
+abstract: >-
+  A reproducible study of whether public news and macro releases can be traded
+  profitably in crypto at realistic costs and realistic latency. 86,171 headlines
+  from 11 sources form 45,625 (headline, symbol) pairs on Binance one-minute bars,
+  plus 714 spot listings, 923 perpetual listings, 528 macro releases and 1,040
+  minute-level shocks. Eleven of twelve tested ideas lose money after costs; CPI
+  releases at 60 minutes remain a candidate, not a strategy. Includes nine
+  documented defects that were found and fixed, and an independent verifier that
+  recomputes every published number without importing the pipeline.
+authors:
+  - name: "vladmurnik"
+    website: "https://github.com/vladmurnik"
+repository-code: "https://github.com/vladmurnik/stock-price-prediction"
+url: "https://github.com/vladmurnik/stock-price-prediction/blob/main/docs/research/crypto-news-alpha.md"
+date-released: "2026-11-11"
+keywords:
+  - crypto
+  - news sentiment
+  - event study
+  - macro releases
+  - market microstructure
+  - negative result
+  - reproducibility

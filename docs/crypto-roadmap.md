@@ -271,7 +271,7 @@ trust_s = rank_pct(alpha_s) * (1 - min(1, median_latency_s / 900))
 | `ops/crypto_eval.py` | holdout-оценка с lock | одноразовое вскрытие |
 | `configs/crypto_dataset.yaml` | активы, период, горизонты, издержки, сплиты | заморозка дизайна |
 | `configs/crypto_models.yaml` | семейства, сетки, kelly_fraction | заморозка дизайна |
-| `tests/test_crypto_bars.py` | дыры, таймзоны, листинг | регресс |
+| `tests/test_crypto_build_bars.py` | дыры, таймзоны, листинг | регресс |
 | `tests/test_crypto_news.py` | атрибуция, дедуп, отсутствие published_at у GDELT | регресс |
 | `tests/test_crypto_dataset.py` | баланс воронки, издержки один раз | регресс |
 | `tests/test_crypto_leakage.py` | положительный контроль утечки | защита результата |
