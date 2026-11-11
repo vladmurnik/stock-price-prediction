@@ -90,6 +90,10 @@ def refresh_calendar() -> pd.DataFrame:
     meetings = sorted({day for text in fomc_pages for day in macro.parse_fomc_archive(text)})
     print(f"fomc: {len(meetings)} scheduled meetings")
     frame = macro.calendar_frame(bls_pages, fomc_pages)
+    # A parser that silently returns nothing would overwrite the committed calendar with
+    # an empty file, so the count is checked before the write.
+    if len(frame) < 200:
+        raise SystemExit(f"calendar has only {len(frame)} events: refusing to overwrite {CALENDAR}")
     macro.write_calendar(frame, CALENDAR)
     print(f"wrote {CALENDAR} ({len(frame)} events)")
     return frame
@@ -332,12 +336,21 @@ def render(
             f"{row['mom_bps']:+.2f} | {row['mom_t']:+.2f} |\n"
         )
 
+    cells = len(rows)
+    positive = [row for row in rows if row["mom_net_bps"] > 0]
+    strong = [row for row in positive if abs(row["mom_t"]) > 2.0]
+    top = sorted(positive, key=lambda row: -row["mom_net_bps"])[:3]
+    top_text = ", ".join(
+        f"{row['event']} {row['symbol']} {row['horizon']}м {row['mom_net_bps']:+.2f}" for row in top
+    )
     lines.append(
         "\n## Что можно утверждать\n\n"
-        "Ячеек в таблице моментума 36 (3 события × 2 символа × 6 горизонтов). Порог Бонферрони "
-        "для 36 проверок при 5 % — |t| ≈ 3.2; ни одна ячейка его не проходит, поэтому "
-        "единственная положительная net-ячейка (CPI, 60 минут) — кандидат, а не результат. "
-        "Два независимых инструмента (BTC и ETH) дают тот же знак и близкую величину, эпоха "
+        f"Ячеек в таблице моментума {cells} (3 события × 2 символа × 6 горизонтов). Порог "
+        "Бонферрони для 36 проверок при 5 % — |t| ≈ 3.2; ни одна ячейка его не проходит. "
+        f"Положительный net после издержек у {len(positive)} из {cells} ячеек (лучшие: {top_text}), "
+        f"но |t| > 2 только у {len(strong)}, и все они принадлежат одному событию — CPI — на двух "
+        "коррелированных инструментах (60 и 15 минут). BTC и ETH сильно коррелированы (r ≈ 0.59 на 109 событиях CPI), "
+        "поэтому второй инструмент — согласованность знака, а не независимая репликация. Эпоха "
         "одна (2021–2023), а вход позже пяти минут убивает эффект — это признаки реакции на "
         "первый принт, а не медленного дрейфа.\n"
     )

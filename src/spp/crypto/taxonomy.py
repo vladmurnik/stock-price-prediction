@@ -58,8 +58,10 @@ _HACK: Final[re.Pattern[str]] = re.compile(
     r"rug ?pull(?:ed)?|attacked)\b",
     re.IGNORECASE,
 )
+#: ``liquidat*`` is deliberately absent: most hits are market commentary ("$250M
+#: liquidated in 24h"), not a firm going under, and they carried the wrong sign.
 _INSOLVENCY: Final[re.Pattern[str]] = re.compile(
-    r"\b(?:bankrupt(?:cy)?|insolven(?:t|cy)|chapter 11|liquidat(?:ed|ion)|"
+    r"\b(?:bankrupt(?:cy)?|insolven(?:t|cy)|chapter 11|"
     r"collapse[sd]?|wind(?:s|ing)? down|shuts? down)\b",
     re.IGNORECASE,
 )
@@ -169,9 +171,11 @@ DIRECTIONS: Final[dict[str, int]] = {
     "etf_rejection": -1,
 }
 
+#: Rejection is tested first: "SEC postpones approval of the ETF" contains the word
+#: "approval" but is a delay, so approval-first would flip the sign of 13 headlines.
 _ETF_CLASSES: Final[tuple[tuple[str, re.Pattern[str]], ...]] = (
-    ("etf_approval", _APPROVE),
     ("etf_rejection", _REJECT),
+    ("etf_approval", _APPROVE),
 )
 
 

@@ -64,6 +64,21 @@ def test_etf_decision_wins_over_generic_classes() -> None:
     assert classify("Partners Celebrate as SEC Approves Spot Ether ETF") == "etf_approval"
 
 
+def test_liquidation_commentary_is_not_insolvency() -> None:
+    """A market recap of liquidations is not a firm going under, and it is not shortable."""
+    assert classify("$250M Worth Top Crypto Liquidated In 24Hrs; BTC, ETH Down") is None
+    assert classify("Celsius files for Chapter 11 bankruptcy protection") == "insolvency"
+
+
+def test_delayed_approval_is_a_rejection() -> None:
+    """'postpones approval' contains 'approval' but is the opposite event."""
+    assert (
+        classify("SEC delays Ethereum ETF approval as ETH faces six-day downtrend")
+        == "etf_rejection"
+    )
+    assert classify("SEC Postpones Approval of Hashdex Spot Bitcoin ETF") == "etf_rejection"
+
+
 def test_every_class_has_a_direction_and_a_note() -> None:
     assert set(DIRECTIONS) == {spec.name for spec in CLASSES} | {"etf_approval", "etf_rejection"}
     for spec in CLASSES:

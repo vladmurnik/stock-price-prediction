@@ -241,13 +241,16 @@ published months ahead: 528 releases (CPI and payrolls back to 2008, FOMC to 201
 BTC/ETH bars from 2017-08. CPI moves |return| by 74.5 bps over the next hour against 51.1 bps in the
 same hour on a normal day (1.46×; FOMC 2.11×). Trading with the release-minute candle one minute later
 earns **+28.65 bps over 60 minutes on BTC (t +2.66, net +14.65 after 14 bps)** and **+35.32 bps on ETH
-(t +2.48, net +21.32)** — the first positive net cell in the project, and the first one confirmed on two
-instruments. It is a candidate, not a strategy: 36 cells were tested (Bonferroni needs |t| ≈ 3.2), the
+(t +2.48, net +21.32)** — the best cell in the project, and the only one above |t| 2 on both instruments (which correlate
+at 0.59, so this is consistency of sign, not independent replication). It is a candidate, not a strategy: 13 of 36 cells are net positive, 36 cells were tested
+(Bonferroni needs |t| ≈ 3.2), the
 effect lives in 2021–2023, and a 15-minute entry delay takes it below cost.
 
 **Where the amplitude is.** Structural events on the majors do not have it: mean |return| over an hour
 is 30–62 bps against 46 bps for an ordinary commentary piece, and the only directional effect that
-reaches the cost line is shorting insolvency (+12.40 bps, t +2.14, net −1.60 at 14 bps). The amplitude
+reaches the cost line is shorting insolvency (+13.48 bps, t +1.63, net −0.52 at 14 bps; the earlier
++12.40 with t +2.14 came from 206 liquidation-recap headlines that are no longer classified as
+insolvency). The amplitude
 lives in exchange listings, and it is measured there: across 714 spot listings, buying from the second
 minute loses **2.65 % in an hour** (t −3.56) and **5.44 % in a day** (t −4.63), because the opening
 auction (median +18.14 %) has already absorbed the move. The mirror trade — shorting spot — is

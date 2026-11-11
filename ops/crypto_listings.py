@@ -107,7 +107,9 @@ def list_symbols(limit: int | None = None) -> list[str]:
 
 def first_month(symbol: str) -> tuple[int, int] | None:
     """The earliest month that has a kline file for ``symbol``."""
-    root = _s3({"prefix": f"{KLINE_PREFIX}{symbol}/"})
+    # The interval must be pinned: without it the keys of every interval are mixed in and
+    # `min()` picks the 1M bucket, whose first month need not match the 1m archive.
+    root = _s3({"prefix": f"{KLINE_PREFIX}{symbol}/1m/"})
     keys = [node.text or "" for node in root.findall("s3:Contents/s3:Key", NS)]
     months = [key for key in keys if key.endswith(".zip")]
     if not months:
