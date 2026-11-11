@@ -1,4 +1,4 @@
-﻿import json, numpy as np, pandas as pd
+import json, numpy as np, pandas as pd
 from scipy.stats import spearmanr
 def daily_ic(df, ycol, pcol):
     out = df.groupby("date").apply(lambda g: spearmanr(g[ycol], g[pcol]).statistic if len(g) > 2 else np.nan)

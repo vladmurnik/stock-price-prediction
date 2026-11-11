@@ -1,4 +1,4 @@
-﻿import json, numpy as np
+import json, numpy as np
 from scipy import stats
 for run in ["a1-market-only","a2-sentiment-only","a5-all","a4-lexicon","a6-strict-dates"]:
     m = json.load(open(f"reports/runs/{run}/metrics.json"))

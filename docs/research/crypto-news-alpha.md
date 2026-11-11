@@ -4,11 +4,13 @@
 
 **What was tested:** whether public news and macro releases can be traded profitably in crypto at realistic costs and realistic reaction latency.
 
-**Short answer:** on Binance one-minute data from 2023 to 2026 — no. Eleven of the twelve tested ideas lost money after costs; the twelfth (CPI releases) produced the first positive cell in the project and remains a candidate, not a strategy. Below is the whole path, every number, and why each branch ended the way it did.
+**Short answer:** on Binance one-minute data from 2023 to 2026 — no. Of the fourteen tested ideas, twelve lost money after costs, one (the intraday equity branch) turned out not measurable on the available data, and only CPI releases produced the first positive cell in the project — a candidate, not a strategy. Below is the project's history, every number, and why each branch ended the way it did.
 
 **Scope:** 86,171 headlines from 11 sources, forming 45,625 (headline, symbol) pairs — 21,588 in the cross-section and 24,037 on BTC — plus 714 spot listings, 923 perpetual listings, 528 macro releases and 1,040 minute-level shocks. That is 47,790 measured events, 422 automated tests and 78 independent number checks.
 
 ## Contents
+
+**Prologue.** [How the project got here](#prologue-how-the-project-got-here)
 
 1. [Problem statement](#1-problem-statement)
 2. [Data](#2-data)
@@ -35,8 +37,50 @@
 11. [Reproduction](#11-reproduction)
 12. [Conclusion](#12-conclusion)
 
+**Appendices.** [Experiment registry](#appendix-a-experiment-registry) · [Decision log](#appendix-b-decision-log)
+
 
 ---
+
+## Prologue. How the project got here
+
+This work was assembled in four days — 2026-11-08 … 2026-11-11, 27 commits — but the data inside it
+spans 2017–2026. The order of the stages matters: each step was an answer to a specific measurement
+of the previous one, not a tour of ideas. Below is the route, with artifacts that can be opened and
+re-checked.
+
+| stage | what was built | how it ended |
+|---|---|---|
+| 1. Daily hypothesis on equities (`dc38f47`) | 124,571 FNSPID articles, 40 US stocks, FinBERT (macro-F1 0.8862), 49 features, 6 purged folds, locked 2023 holdout | raw `sent_mean` rank IC +0.0202 (t +2.71), quintile spread +8.3 bps/day (t +1.78), but holdout IC 0.0127 [−0.0102, 0.0356] and net Sharpe −6.75 |
+| 2. Audit of the machinery itself | leakage and feature-coverage checks | two defects were manufacturing a third of the "edge": NaN instead of 0 in sentiment shares and an entirely empty `sector_ret_1`; after the fix CV IC fell 0.0202 → 0.0156 and the interval covered zero |
+| 3. Ablations A1–A8 (`99fdf91`, `976d0c1`, `a6e02e9`) | eight feature sets, three sentiment backends, rank combination | every interval contains zero: open-jev 0.0112 against FinBERT 0.0134, lexicon −0.0079, A8 with typed flags 0.0076 against the 0.0156 control |
+| 4. Classifier sanity check | perturbation test: 200 headlines with the company name replaced by "the company" | 12/200 = 6.0% sign flips, correlation 0.9747, zero flips among confident scores (\|d\| ≥ 0.2, n = 93) — the null cannot be blamed on sentiment |
+| 5. Intraday equity branch (`31da1d3` … `0c57024`) | one article = one trade, entry no earlier than `published_at + 5 min`, horizons 60/120/180 min, 15 bps round trip | 59 events, +2.67 bps at 60 min against an MDE of 18.3 bps, bootstrap 22–30 → "not measurable"; the cause is supply: FNSPID ends 2023-12-16, hourly bars start 2024-11-11 |
+| 6. Pivot to crypto (`7396dfd`, `ae3e70f`, `ad52e70`) | keyless Binance minute bars, 24/7 trading, leverage, around-the-clock RSS | 260 minute-level shocks per instrument: no continuation, and at one hour SOL −18.74 and DOGE −24.19 bps (t ≈ −1.9) — the problem is execution, not measurement |
+| 7. Pipeline (`8970348`) | 12 symbols × 47 months, 86,171 headlines from 11 sources through the Wayback CDX API, 7 leakage checks | 21,588 events, splits 17,155 / 3,964 / 465, entry lag p50 1.45 min |
+| 8. Seven branches and macro (`8e14838` … `eebe4ac`) | cross-section, BTC absolute return, capacity ladder, classic models, maker execution, structural events, listings, perps, macro prints | eight negative families and one positive cell — CPI at 60 minutes |
+| 9. Independent audit (`d352c30`, `8e27b24`) | `ops/crypto_verify.py` — 78 checks importing no pipeline module | 78/78 matched; 9 defects found and fixed; the first 6 "mismatches" were bugs in the verifier itself |
+| 10. Second pass (`4758e1f`) | window overlap, block bootstrap, funding from Binance archives, slippage ladder | 24.4% of events overlap at one hour (t 1.89 → 1.64), CPI survives (p 0.0068/0.0114), funding +3.73 bps, and no family crosses zero at any slippage level |
+| 11. Publication (`7911a12`, `fd0e80c`) | the paper in two languages, datasets in git, artifact indexes | 47,790 measured events, 422 automated tests, 78 independent checks |
+
+**Why the route changed.** Four turns, each caused by a number rather than an opinion.
+
+1. *After equities: maybe the horizon is wrong.* Tested with the intraday branch — and it turned out
+   not measurable, not because there is no effect but because news and bars do not overlap. The
+   conclusion: the data supply has to change, not the model.
+2. *In crypto: where the amplitude actually lives.* The cross-section gave 0.87 bps per hour — 32
+   times below costs. So the search moved to where the amplitude is physically larger: structural
+   events, listings, macro prints.
+3. *In listings: the amplitude exists, but it sits in the auction.* The auction median is +18.14%,
+   and the price falls afterwards. Amplitude you cannot enter is not an edge.
+4. *In macro: the time is known in advance.* The only branch that does not require guessing the
+   moment — and the only positive cell in the project. That is why it stayed a candidate rather than
+   a strategy: everything else here has been tested on history, and this has not.
+
+**What was fixed in advance.** `configs/final.yaml` and the 2023 holdout lock file,
+`configs/intraday.yaml`, `configs/crypto.yaml`, and `docs/crypto-design.md` with its kill criteria.
+No leakage gate was weakened in any experiment, and negative results were published in the same form
+as positive ones — including the ones that cancelled text already written.
 
 ## 1. Problem statement
 
@@ -130,9 +174,11 @@ An `excess` label is a spread, so it pays **two** legs — 28 bps per round trip
 | 7 | spot listings | the first minute is the entry into the move | **failed**: the auction is unreachable, then −2.65% over the hour |
 | 8 | perpetual listings | a short catches the post-listing reversal | **failed**: negative mean, the tail eats the median |
 | 9 | macro releases CPI/FOMC/NFP | time is known in advance and amplitude is larger | **candidate**: CPI 60 min +28.9 bps, t +2.66 |
-| 10 | daily and intraday equity branches | transfer the method to stocks | **failed**: IC 0.0127 unconfirmed; intraday not measurable |
-| 11 | source trust | some publishers carry a stronger signal and can be weighted | **failed**: the ranking does not replicate, Spearman −0.03…+0.15 |
-| 12 | post-shock continuation | a violent move continues | **failed**: the sign flips across instruments, |t| ≤ 1.93, best cell +9.37 bps < 14 |
+| 10 | source trust | some publishers carry a stronger signal and can be weighted | **failed**: the ranking does not replicate, Spearman −0.03…+0.15 |
+| 11 | post-shock continuation | a violent move continues | **failed**: the sign flips across instruments, |t| ≤ 1.93, best cell +9.37 bps < 14 |
+| 12 | daily hypothesis on equities (method transfer) | yesterday's news sentiment predicts tomorrow's return | **failed**: holdout IC 0.0127 [−0.0102, 0.0356], net Sharpe −6.75 |
+| 13 | ablations A1–A8 and sentiment backends | the signal is lost in the model or the lexicon, not in the market | **failed**: every interval contains zero; open-jev 0.0112 < FinBERT 0.0134, lexicon −0.0079, A8 0.0076 against the 0.0156 control |
+| 14 | intraday equity branch (one article = one trade) | news decays over hours, not days | **not measurable**: 59 events, +2.67 bps against an MDE of 18.3 bps and a bootstrap of 22–30 |
 
 ---
 
@@ -314,7 +360,26 @@ Risk: median maximum rise in the first hour +3.37%, p90 +19.15%, **p99 +51.33%**
 
 ### 5.10. Daily and intraday equity branches
 
-The method was first built on equities. The daily branch: 2023 holdout, IC 0.0127, confidence interval [−0.0102, 0.0356], verdict `not_confirmed`, net Sharpe −6.75. The intraday branch: 59 events over 6 sessions, effect +2.67 bps against an MDE of 18–22 bps — **not measurable** with the available data, so it was published as "not measured", not as "does not work".
+The method was first built on equities, which explains where every convention in the crypto work came from: purged folds, an embargo, a frozen holdout, and costs per round trip rather than per leg.
+
+**Daily branch.** 124,571 FNSPID articles, 40 US stocks, FinBERT (macro-F1 0.8862), 49 features, 6 purged folds, one locked 2023 holdout. The raw feature worked: `sent_mean` gave a rank IC of +0.0202 (t +2.71) over 1,250 days, `ewma_24h` +0.0206 (t +2.77), and the Q5−Q1 quintile spread +8.3 bps per day (t +1.78). But the model on the holdout gave IC 0.0127 [−0.0102, 0.0356], verdict `not_confirmed`, and the economic test gave net Sharpe −6.75 at ~166× annual turnover and 5+5 bps per side (~33% a year in costs against ~1% gross edge). The GBDT was **worse** than the raw feature: the model added nothing to what the average sentiment already contained.
+
+**Ablations.** Eight feature sets and three backends (table below). No interval excludes zero; the lexicon is worse than nothing; the rank combination of A2 and A3 gives 0.0137 — between its inputs and below the A5 control on the same rows (0.0156); the two columns only open-jev can supply make things **worse** (A8 0.0076).
+
+| id | features | IC | 95% CI |
+|---|---|---|---|
+| A1 | market only (19) | 0.0007 | [−0.0151, 0.0165] |
+| A2 | sentiment only (28) | 0.0134 | [−0.0052, 0.0320] |
+| **A5** | market + sentiment (49) | **0.0156** | [−0.0069, 0.0381] |
+| A4 | lexicon instead of FinBERT (49) | −0.0079 | [−0.0228, 0.0069] |
+| A6 | strict_dates = true (49) | 0.0167 | [−0.0021, 0.0356] |
+| A3 | sentiment only, open-jev (30) | 0.0112 | [−0.0185, 0.0408] |
+| A7 | rank average of A2 and A3 | 0.0137 | [−0.0160, 0.0435] |
+| A8 | + typed flags, open-jev (49) | 0.0076 | [−0.0068, 0.0219] |
+
+**Classifier check.** A perturbation test: in 200 headlines the company name was replaced by "the company" and re-scored with the same FinBERT. Sign flips: 12/200 = 6.0%, correlation between the original and perturbed score 0.9747, and among confident scores (|d| ≥ 0.2, n = 93) **zero** flips. Direction comes from the content, not from the company name — so the null cannot be blamed on the sentiment layer.
+
+**Intraday branch.** One article = one trade, entry at the open of the first bar no earlier than `published_at + 5 min`, exit at the close of the bar containing `entry + horizon` (60/120/180 min), target = stock return minus SPY, 15 bps round trip. Result: 59 events, +2.67 / −1.13 / −11.37 bps, MDE 18.3 / 20.6 / 26.0 bps, session bootstrap 22–30 bps. Verdict — **not measurable**: the sample cannot resolve anything below 18 bps, while the plausible size of a news effect is 8–10 bps. Three facts forbid stronger wording: the median entry delay is 75 minutes rather than five, 35 of 59 events fall on a single session, and FNSPID ends 2023-12-16 while hourly bars start 2024-11-11 — the two windows do not overlap at all.
 
 ### 5.11. Source trust
 
@@ -510,3 +575,56 @@ Three numbers describe the whole result:
 Until those three numbers change (cheaper execution, faster reaction, or a different amplitude), the news branch will stay negative no matter the model. The only two places where the arithmetic works out are macro releases with a known timestamp and listings on a second exchange; both are stated as testable hypotheses with a deadline and a stopping rule.
 
 A negative result with reproducible numbers is a result. It saves time for the next person who wants to test the same idea: now it is known which checks must be done before, not after, a model shows a beautiful backtest.
+
+---
+
+## Appendix A. Experiment registry
+
+Every script in `ops/` is one question asked, one artifact produced and one verdict reached. The
+table exists so that a reader can check that nothing is missing and nothing was rewritten after the
+fact.
+
+| script | question | artifact | verdict |
+|---|---|---|---|
+| `crypto_probe` | are the exchanges and archives reachable? | `results/crypto_probe.json` | infrastructure: 200 from every source |
+| `crypto_build_bars` | minute bars for 12 majors, 47 months | `data/crypto/bars/1m/*.parquet`, `results/crypto_bars_quality.json` | 0 OHLC violations |
+| `crypto_macro_bars` | long BTC/ETH history from 2017-08 | `data/crypto/bars/1m_macro/*.parquet` | ~4.83M rows per symbol |
+| `crypto_wayback` | archived headline corpus | `data/crypto/news/wayback.parquet` | 86,171 headlines |
+| `crypto_news` | live first-seen recorder | `data/crypto/news/recorder.parquet` | 87 rows, p50 latency 15.9 min |
+| `crypto_dataset` | event assembly and leakage checks | `data/crypto/dataset/events.parquet`, `results/crypto_dataset.json` | 21,588 events, 7 checks PASS |
+| `crypto_audit` | exposure, lag, benchmark, duplicates | `results/crypto_audit.json` | 11,715 label checks, max \|Δ\| = 0.0 |
+| `crypto_train` | quantile model and policy | `results/crypto_models.json`, `crypto_policy.md` | net −1.17 bps, t −3.01 |
+| `crypto_sources` | do sources differ in quality? | `results/crypto_sources.json`, `.md` | the ranking does not replicate |
+| `crypto_ladder` | is model capacity the bottleneck? | `results/crypto_ladder.json`, `.md` | 15 configurations, best net −23.25 |
+| `crypto_classic` | are off-the-shelf models stronger? | `results/crypto_classic.json`, `.md` | best net −23.16 |
+| `crypto_maker` | is passive entry cheaper than taker? | `results/crypto_maker.json`, `.md` | adverse selection, −3.6…−5.5 bps before costs |
+| `crypto_btc` | BTC on absolute return | `results/crypto_btc.json`, `crypto_btc_policy.md` | gross +5.11, net −0.55, t −1.85 |
+| `crypto_structural` | do structural events move harder? | `results/crypto_structural.json`, `.md` | 30–62 bps against 46.2 for a comment |
+| `crypto_listings` | is a spot listing an entry into the move? | `results/crypto_listings.json`, `.md` | −2.65% over the hour (t −3.56) |
+| `crypto_listing_perp` | does a perp short catch the reversal? | `results/crypto_listing_perp.json`, `.md` | mean −0.61%, p99 +51.33% |
+| `crypto_macro` | are macro prints predictable? | `results/crypto_macro.json`, `.md` | CPI +28.65 bps (t +2.66) |
+| `crypto_shock` | does a shock continue? | `results/crypto_shock.json` | \|t\| ≤ 1.93, the sign flips across instruments |
+| `crypto_verify` | do the numbers reproduce independently? | `results/crypto_verification.json`, `.md` | 78/78 PASS |
+| `crypto_verify2` | overlap, bootstrap, funding, slippage | `results/crypto_robustness.json`, `.md` | the conclusion does not move in a single row |
+
+The complete artifact list with its scripts is in `results/README.md`.
+
+## Appendix B. Decision log
+
+Eight decisions determined every number in this work. They are recorded together with the
+alternative that was rejected — otherwise, a month later, it is impossible to see why the numbers
+are what they are.
+
+| decision | rejected alternative | reason | recorded in |
+|---|---|---|---|
+| BTC as the cross-sectional benchmark | raw asset return | the market moves together; the question is the specific reaction, not beta | §1, `events_btc` |
+| BTC cannot be its own benchmark | keep BTC in the cross-section | a BTC−BTC spread is identically zero | §2.2, `benchmark_asset` |
+| two cost legs, 28 bps | one leg, 14 bps | the label is a spread of two positions; the first version overstated net by exactly 14 bps | §3.2, `crypto_policy.md` |
+| entry at the first bar after publication | a "safe" five-minute delay | five minutes is an assumption, not a measurement; the actual lag is p50 1.45 min | §1 |
+| entry at the second listing bar | entry at the first bar | the first bar is an auction (1INCH: open 0.200, high 2.900); the mistake showed +337% | §5.7 |
+| ETF: rejection tested before approval | "approval first" ordering | 13 headlines received the opposite sign | §7 |
+| leverage is position sizing, not edge | "leverage will increase the return" | `net = L·(sign·excess − cost)`; the sign does not change and the tail grows | §3.2 |
+| publish negative results | cherry-pick the favourable cells | otherwise the project measures luck, not the market | the whole paper |
+
+One more decision did not fit the table because it is about the work itself: the 2023 holdout was
+frozen and never used for a single choice — neither in equities nor in crypto.

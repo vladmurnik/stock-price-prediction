@@ -1,4 +1,4 @@
-﻿# ruff: noqa: E501  - prints a report table
+# ruff: noqa: E501  - prints a report table
 """Lever 1: would maker execution rescue the edge?
 
 Taker execution costs 28 bps round trip for a hedged pair, and the measured edge is 0.5-1.2

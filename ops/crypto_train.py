@@ -1,4 +1,4 @@
-﻿"""T7 — train the crypto event-study models and write the policy report.
+"""T7 — train the crypto event-study models and write the policy report.
 
 Usage:
     python ops/crypto_train.py

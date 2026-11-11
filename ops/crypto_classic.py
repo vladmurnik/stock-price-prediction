@@ -1,4 +1,4 @@
-﻿# ruff: noqa: E501  - prints a report table
+# ruff: noqa: E501  - prints a report table
 """Classic market models on the news sample, alone and combined.
 
 The question: do the models people historically use for price prediction - logistic
