@@ -1,0 +1,642 @@
+[
+  {
+    "check": "\u0434\u0430\u0442\u0430\u0441\u0435\u0442: \u0441\u0442\u0440\u043e\u043a",
+    "claimed": 21588,
+    "computed": 21588,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0434\u0430\u0442\u0430\u0441\u0435\u0442: \u0430\u043a\u0442\u0438\u0432\u043e\u0432",
+    "claimed": 11,
+    "computed": 11,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0434\u0430\u0442\u0430\u0441\u0435\u0442: \u0438\u0437\u0434\u0435\u0440\u0436\u043a\u0430 \u043e\u0434\u043d\u0430 \u043d\u0430 \u0432\u0441\u0435\u0445",
+    "claimed": 1,
+    "computed": 1,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0434\u0430\u0442\u0430\u0441\u0435\u0442: \u0441\u043f\u043b\u0438\u0442\u044b",
+    "claimed": {
+      "train": 17155,
+      "val": 3964,
+      "holdout": 465
+    },
+    "computed": {
+      "train": 17155,
+      "val": 3964,
+      "holdout": 465
+    },
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0434\u0430\u0442\u0430\u0441\u0435\u0442: holdout \u043d\u0435 \u0442\u0440\u043e\u043d\u0443\u0442 (n)",
+    "claimed": 465,
+    "computed": 465,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 5m: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, \u0431\u043f",
+    "claimed": 0.09,
+    "computed": 0.09037654020179621,
+    "delta": 0.0003765402017962133,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 5m: t \u043f\u043e \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430\u043c",
+    "claimed": 0.56,
+    "computed": 0.5557321211145195,
+    "delta": -0.004267878885480525,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 5m: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": 0.54,
+    "computed": 0.538172652161057,
+    "delta": -0.0018273478389430053,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 15m: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, \u0431\u043f",
+    "claimed": 0.29,
+    "computed": 0.28791368668413614,
+    "delta": -0.0020863133158638414,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 15m: t \u043f\u043e \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430\u043c",
+    "claimed": 1.1,
+    "computed": 1.0978893616450656,
+    "delta": -0.0021106383549345242,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 15m: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": 1.05,
+    "computed": 1.051284786082732,
+    "delta": 0.0012847860827318591,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 60m: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, \u0431\u043f",
+    "claimed": 0.87,
+    "computed": 0.8718344967901794,
+    "delta": 0.0018344967901794407,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 60m: t \u043f\u043e \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430\u043c",
+    "claimed": 1.75,
+    "computed": 1.754205485680438,
+    "delta": 0.0042054856804381036,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 60m: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": 1.39,
+    "computed": 1.389562355204873,
+    "delta": -0.00043764479512686805,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 5m: MDE 80 % (i.i.d.)",
+    "claimed": 0.41,
+    "computed": 0.41117932562268633,
+    "delta": 0.0011793256226863558,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 60m: MDE 80 % (i.i.d.)",
+    "claimed": 1.29,
+    "computed": 1.2948117846016227,
+    "delta": 0.004811784601622682,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 5m = ret \u2212 bench: max|\u0394|",
+    "claimed": 0.0,
+    "computed": 0.0,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 15m = ret \u2212 bench: max|\u0394|",
+    "claimed": 0.0,
+    "computed": 0.0,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "excess 60m = ret \u2212 bench: max|\u0394|",
+    "claimed": 0.0,
+    "computed": 0.0,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0430\u0433 p50, \u043c\u0438\u043d",
+    "claimed": 1.45,
+    "computed": 1.45,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438: \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u043e",
+    "claimed": 714,
+    "computed": 714,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438: \u0430\u0443\u043a\u0446\u0438\u043e\u043d, \u043c\u0435\u0434\u0438\u0430\u043d\u0430 %",
+    "claimed": 18.14,
+    "computed": 18.14476254264824,
+    "delta": 0.0047625426482404976,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438 60\u043c: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, %",
+    "claimed": -2.65,
+    "computed": -2.64812102726059,
+    "delta": 0.0018789727394099565,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438 60\u043c: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": -3.56,
+    "computed": -3.5591193470464555,
+    "delta": 0.0008806529535445584,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438 1440\u043c: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, %",
+    "claimed": -5.44,
+    "computed": -5.441572389440733,
+    "delta": -0.001572389440732458,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438 1440\u043c: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": -4.63,
+    "computed": -4.630980425753815,
+    "delta": -0.000980425753815517,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043b\u0438\u0441\u0442\u0438\u043d\u0433\u0438: \u0432\u0445\u043e\u0434 = \u0432\u0442\u043e\u0440\u043e\u0439 \u0431\u0430\u0440, \u0432\u0441\u0435 714",
+    "claimed": 714,
+    "computed": 714,
+    "delta": 0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b: \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u043e",
+    "claimed": 923,
+    "computed": 923,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b 1\u043c: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, %",
+    "claimed": -0.26,
+    "computed": -0.26009870662766793,
+    "delta": -9.87066276679216e-05,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b 1\u043c: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": -2.15,
+    "computed": -2.1526743278407436,
+    "delta": -0.0026743278407437288,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b 5\u043c: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, %",
+    "claimed": -0.54,
+    "computed": -0.53688219118535,
+    "delta": 0.0031178088146500693,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b 5\u043c: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": -3.28,
+    "computed": -3.2753376895424395,
+    "delta": 0.00466231045756027,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b 60\u043c: \u0441\u0440\u0435\u0434\u043d\u0435\u0435, %",
+    "claimed": -0.61,
+    "computed": -0.6122343198486628,
+    "delta": -0.002234319848662847,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b 60\u043c: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": -1.79,
+    "computed": -1.7901916669597182,
+    "delta": -0.00019166695971817305,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b: p99 \u0445\u043e\u0434\u0430 \u043f\u0440\u043e\u0442\u0438\u0432 \u0448\u043e\u0440\u0442\u0430, %",
+    "claimed": 51.33,
+    "computed": 51.33169652278248,
+    "delta": 0.0016965227824812246,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b: \u0434\u043e\u043b\u044f \u226520 % \u0437\u0430 \u0447\u0430\u0441",
+    "claimed": 0.093,
+    "computed": 0.09317443120260022,
+    "delta": 0.00017443120260021705,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043f\u0435\u0440\u043f\u044b: \u0434\u043e\u043b\u044f \u226533 % \u0437\u0430 \u0447\u0430\u0441",
+    "claimed": 0.038,
+    "computed": 0.03683640303358613,
+    "delta": -0.0011635969664138684,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c: \u0441\u043e\u0431\u044b\u0442\u0438\u0439",
+    "claimed": 528,
+    "computed": 528,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c: \u0441\u043e\u0441\u0442\u0430\u0432",
+    "claimed": {
+      "cpi": 225,
+      "nfp": 225,
+      "fomc": 78
+    },
+    "computed": {
+      "nfp": 225,
+      "cpi": 225,
+      "fomc": 78
+    },
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u043c\u0430\u043a\u0440\u043e: \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u043e CPI \u043d\u0430 BTC",
+    "claimed": 109,
+    "computed": 109,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "CPI BTC 60\u043c: \u043c\u043e\u043c\u0435\u043d\u0442\u0443\u043c, \u0431\u043f",
+    "claimed": 28.65,
+    "computed": 28.648397871130165,
+    "delta": -0.0016021288698340186,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "CPI BTC 60\u043c: t",
+    "claimed": 2.66,
+    "computed": 2.660137207281394,
+    "delta": 0.00013720728139388072,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a coindesk: n",
+    "claimed": 3450,
+    "computed": 3450,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a coindesk: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": 1.1273509315857033,
+    "computed": 1.1273509315857033,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a coindesk: t",
+    "claimed": 2.1880048015720597,
+    "computed": 2.1880048015720597,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a newsbtc: n",
+    "claimed": 1684,
+    "computed": 1684,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a newsbtc: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": 0.6915489974224885,
+    "computed": 0.6915489974224885,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a newsbtc: t",
+    "claimed": 1.4551760483436038,
+    "computed": 1.455176048343604,
+    "delta": 2.220446049250313e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a ambcrypto: n",
+    "claimed": 1677,
+    "computed": 1677,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a ambcrypto: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": 0.38995618458717873,
+    "computed": 0.38995618458717873,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a ambcrypto: t",
+    "claimed": 0.8771979757639462,
+    "computed": 0.8771979757639463,
+    "delta": 1.1102230246251565e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a coingape: n",
+    "claimed": 3985,
+    "computed": 3985,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a coingape: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": 0.3242441466315122,
+    "computed": 0.32424414663151213,
+    "delta": -5.551115123125783e-17,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a coingape: t",
+    "claimed": 1.0334283651563372,
+    "computed": 1.033428365156337,
+    "delta": -2.220446049250313e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a thedefiant: n",
+    "claimed": 1036,
+    "computed": 1036,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a thedefiant: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": 0.2753629733733208,
+    "computed": 0.2753629733733207,
+    "delta": -5.551115123125783e-17,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a thedefiant: t",
+    "claimed": 0.17644359184300076,
+    "computed": 0.17644359184300076,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a bitcoinist: n",
+    "claimed": 1433,
+    "computed": 1433,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a bitcoinist: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": -0.0739708922224018,
+    "computed": -0.07397089222240182,
+    "delta": -1.3877787807814457e-17,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a bitcoinist: t",
+    "claimed": -0.14594808497419223,
+    "computed": -0.14594808497419226,
+    "delta": -2.7755575615628914e-17,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cryptoslate: n",
+    "claimed": 848,
+    "computed": 848,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cryptoslate: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": -0.14322548553880698,
+    "computed": -0.14322548553880685,
+    "delta": 1.3877787807814457e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cryptoslate: t",
+    "claimed": -0.20340881242663988,
+    "computed": -0.20340881242663975,
+    "delta": 1.3877787807814457e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cryptopotato: n",
+    "claimed": 2840,
+    "computed": 2840,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cryptopotato: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": -0.2912101640860807,
+    "computed": -0.29121016408608064,
+    "delta": 5.551115123125783e-17,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cryptopotato: t",
+    "claimed": -0.918358344349414,
+    "computed": -0.918358344349414,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a theblock: n",
+    "claimed": 847,
+    "computed": 847,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a theblock: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": -0.3597786362695,
+    "computed": -0.35977863626950013,
+    "delta": -1.1102230246251565e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a theblock: t",
+    "claimed": -0.6440727691595499,
+    "computed": -0.6440727691595501,
+    "delta": -2.220446049250313e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cointelegraph: n",
+    "claimed": 3770,
+    "computed": 3770,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cointelegraph: \u0441\u0440\u0435\u0434\u043d\u0435\u0435 5\u043c, \u0431\u043f",
+    "claimed": -1.0743244609420302,
+    "computed": -1.0743244609420302,
+    "delta": 0.0,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a cointelegraph: t",
+    "claimed": -2.596263931667734,
+    "computed": -2.5962639316677345,
+    "delta": -4.440892098500626e-16,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u044b\u0435: \u0441\u043e\u0431\u044b\u0442\u0438\u0439",
+    "claimed": 45625,
+    "computed": 45625,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u044b\u0435: commentary",
+    "claimed": 42145,
+    "computed": 42145,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u044b\u0435 insolvency: n",
+    "claimed": 224,
+    "computed": 224,
+    "delta": null,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u044b\u0435 insolvency: dir60, \u0431\u043f",
+    "claimed": 13.48,
+    "computed": 13.479415781336241,
+    "delta": -0.0005842186637590174,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u044b\u0435 insolvency: t \u043f\u043e \u0434\u043d\u044f\u043c",
+    "claimed": 1.63,
+    "computed": 1.6280149440392884,
+    "delta": -0.0019850559607115237,
+    "verdict": "PASS",
+    "unit": ""
+  },
+  {
+    "check": "\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u043d\u044b\u0435: liquidat*-\u0441\u0442\u0440\u043e\u043a \u0432 insolvency (\u0431\u044b\u043b\u043e 206 \u0438\u0437 427)",
+    "claimed": 3,
+    "computed": 3,
+    "delta": 0,
+    "verdict": "PASS",
+    "unit": ""
+  }
+]
